@@ -50,11 +50,14 @@
 						<button class="btn-green" id="long-btn"
 							onclick="location.href='${pageContext.request.contextPath}/searchNullLect'">입력
 							미완료 강의 보기</button>
+							<c:if test="${sessionScope.aInfo.a_grade <= 1 || sessionScope.access.acc_lect_insert == 1}">
 						<button class="btn-blue"
 							onclick="location.href='${pageContext.request.contextPath}/moveInsertLect'">등록</button>
+							</c:if>
 					</div>
 					<p class="count">
-						개설된 강의(개강 전) : <span>${lectList.size()}</span> 
+						개설된 강의(개강 전) : <span>${lectList.size()}</span> <span>*표시는
+							정보 입력 미완료된 강의에 대한 표시입니다.</span>
 					</p>
 					<!-- 검색 폼 -->
 					<div class="main-top">
@@ -90,8 +93,12 @@
 							<c:otherwise>
 								<c:forEach var="k" items="${lectList}" varStatus="v">
 									<div class="search-list">
+										<c:if
+											test="${empty k.t_idx or empty k.lect_day or empty k.dept_name or empty k.lect_start_time or empty k.lect_end_time}">
+											<span>*</span>
+										</c:if>
 										<h2>
-											<a href="/detailLect?lect_idx=${k.lect_idx}">${v.count + 1}.${k.lect_name}</a>
+											<a href="/detailLect?lect_idx=${k.lect_idx}">${v.count}.${k.lect_name}</a>
 										</h2>
 										<div>
 											<p>강의코드</p>
@@ -126,11 +133,14 @@
 				<div class="main-container">
 					<div class="btn-group">
 						<button class="btn-green" id="list-btn"
-							onclick="location.href='${pageContext.request.contextPath}/subjectSetList'">전체 과목군 보기</button>
-						<button class="btn-blue"
-							onclick="location.href='${pageContext.request.contextPath}/moveInsertSubjectSet'">등록</button>
+							onclick="location.href='${pageContext.request.contextPath}/subSetList'">전체	과목군 보기</button>
+					<c:if test="${sessionScope.aInfo.a_grade <= 1}">
+						<button class="btn-blue" onclick="location.href='${pageContext.request.contextPath}/moveInsertSubjectSet'">등록</button>
+					</c:if>
 					</div>
-					
+					<p class="count">
+						전체 과목군 : <span>${fn:length(subjectSetList)}</span>
+					</p>
 					<!-- 검색 폼 -->
 					<div class="main-top">
 						<form action="/searchSubjectSet" method="get" class="form-top" id="subject-group-search-form">
@@ -168,7 +178,7 @@
 										<c:forEach var="k" items="${subjectSetList}" varStatus="v">
 											<tr>
 												<td>${v.index + 1}</td>
-												<td><a href="/detailSubjectSet?sub_set_num=${k.sub_set_num}">${k.sub_set_name}</a></td>
+												<td><a href="/detailSubjectSet?sub_set_idx=${k.sub_set_idx}">${k.sub_set_name}</a></td>
 												<td>${k.dept_name}</td>
 												<td>
 													<c:choose>
@@ -195,12 +205,14 @@
 				<div class="main-container">
 					<div class="btn-group">
 						<button class="btn-green" id="list-btn"
-							onclick="location.href='${pageContext.request.contextPath}/subjectList'">전체
-							과목 보기</button>
-						<button class="btn-blue"
-							onclick="location.href='${pageContext.request.contextPath}/moveInsertSubject'">등록</button>
+							onclick="location.href='${pageContext.request.contextPath}/subjectList'">전체 과목 보기</button>
+							<c:if test="${sessionScope.aInfo.a_grade <= 1 || sessionScope.access.acc_lect_insert == 1}">
+						<button class="btn-blue" onclick="location.href='${pageContext.request.contextPath}/moveInsertSubject'">등록</button>
+							</c:if>
 					</div>
-					
+					<p class="count">
+						전체 : <span>${subjectList != null ? subjectList.size() : 0}</span>
+					</p>
 					<!-- 검색 폼 -->
 					<div class="main-top">
 						<form action="/searchSubject" method="get" class="form-top"
@@ -208,8 +220,8 @@
 							<div class="search-area">
 								<div class="search-sub">
 									<select id="searchType" name="searchType" required>
-										<option value="dept_name" selected>학과명</option>
-										<option value="subject_name">과목명</option>
+										<option value="subject_name" selected>과목명</option>
+										<option value="dept_name">학과명</option>
 									</select> <input type="text" name="keyword" required>
 									<button type="submit" class="btn-orange">
 										<i class="fa-solid fa-magnifying-glass"></i>
@@ -248,12 +260,12 @@
 	$(document).ready(function() {
 	    // 초기 탭 설정
 	    var currentUrl = window.location.pathname;
-		var activeTab = 'lect';
-		if (currentUrl.includes('subjectSet') || currentUrl.includes('subjectSetList')) {
-		    activeTab = 'subjectSet';
-		} else if (currentUrl.includes('subject') || currentUrl.includes('searchSubject')) {
-		    activeTab = 'subject';
-		}	
+	    var activeTab = 'lect';
+	    if (currentUrl.includes('subject') || currentUrl.includes('searchSubject')) {
+	        activeTab = 'subject';
+	    } else if (currentUrl.includes('subjectSet') || currentUrl.includes('subjectSetList')) {
+	        activeTab = 'subjectSet';
+	    }
 
 	    console.log('Initial activeTab:', activeTab);
 	    $('.tab-content').removeClass('active').hide();
@@ -275,8 +287,8 @@
 	    // 과목군 검색 폼 AJAX 처리
 	    $('#subject-group-search-form').on('submit', function(e) {
 	    	e.preventDefault();
-	    	var searchType = $(this).find('select[name="searchType"]').val();
-	        var keyword = $(this).find('input[name="keyword"]').val().trim();
+	        var searchType = $('#searchType').val();
+	        var keyword = $('input[name="keyword"]').val().trim();
 
 	        console.log('Search Request - searchType:', searchType, 'keyword:', keyword);
 	        if (!searchType) {
@@ -296,14 +308,22 @@
 	            headers: { 'X-Requested-With': 'XMLHttpRequest' },
 	            cache: false,
 	            success: function(response) {
+	                console.log('Response Type:', typeof response);
 	                var $response = typeof response === 'string' ? $(response) : response;
 	                var content = $response.find('#subjectSetList').html();
 	                if (!content) {
 	                    content = '<p>검색 결과가 없습니다.</p>';
 	                }
+	                console.log('Extracted Content:', content);
 	                $('#subjectSetList').html(content);
+
+	                $('.tab-content').removeClass('active').hide();
+	                $('#subjectSet').addClass('active').show();
+	                $('.nav-container > div').removeClass('active');
+	                $('.nav-container > div[data-tab="subjectSet"]').addClass('active');
 	            },
 	            error: function(xhr, status, error) {
+	                console.error('AJAX Error:', status, error, xhr.responseText);
 	                $('#subjectSetList').html('<p>검색 중 오류가 발생했습니다: ' + error + '</p>');
 	            }
 	        });
@@ -312,8 +332,8 @@
 	    // 과목 검색 폼 AJAX 처리
 	    $('#subject-search-form').on('submit', function(e) {
 	        e.preventDefault();
-	        var searchType = $(this).find('select[name="searchType"]').val();
-	        var keyword = $(this).find('input[name="keyword"]').val().trim();
+	        var searchType = $('#searchType').val();
+	        var keyword = $('input[name="keyword"]').val().trim();
 
 	        console.log('Search Request - searchType:', searchType, 'keyword:', keyword);
 	        if (!searchType) {
