@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="access"> 
+<update id="updateAccess" parameterType="com.university.nuri.vo.commonvo.AccessVO">
+  UPDATE access
+  SET
+    acc_info_update = #{acc_info_update},
+    acc_info_delete = #{acc_info_delete},
+    acc_user_insert = #{acc_user_insert},
+    acc_lect_insert = #{acc_lect_insert},
+    acc_enroll_insert = #{acc_enroll_insert},
+    acc_user_search = #{acc_user_search},
+    acc_lect_search = #{acc_lect_search},
+    acc_enroll_search = #{acc_enroll_search},
+    acc_user_update = #{acc_user_update},
+    acc_lect_update = #{acc_lect_update},
+    acc_enroll_update = #{acc_enroll_update},
+    acc_user_delete = #{acc_user_delete},
+    acc_lect_delete = #{acc_lect_delete},
+    acc_enroll_delete = #{acc_enroll_delete}
+  WHERE  a_grade = #{a_grade}
+</update>
+<!-- 관리자 등급별 권한 불러오기 -->
+<select id="getAccessByGrade" parameterType="String" resultType="com.university.nuri.vo.commonvo.AccessVO">
+  SELECT *
+  FROM access
+  WHERE a_grade = #{a_grade}
+  LIMIT 1
+</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

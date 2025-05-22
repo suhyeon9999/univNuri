@@ -1,0 +1,18 @@
+@charset "UTF-8";
+#selectAll, .rowCheckbox{
+	width: 18px;
+}
+#approve-all-btn, #reject-all-btn{
+	width: 100px;
+	font-family: inherit;
+}
+.btn-group{
+	gap: 10px;
+}
+.a-black{
+	color: #082567;
+	font-weight: bold;
+}
+.a-black:hover{
+	color: dodgerblue;
+}

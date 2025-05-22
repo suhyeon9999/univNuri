@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user"> 
+
+	<!-- 관리자 리스트 불러오기 -->
+	<select id="getAllAdminList" resultType="map">
+		select u.*, a.* 
+		from user u  
+		join admin a on u.user_idx = a.user_idx 
+		where u.active = 0 and a.a_active = 0 and u.status = 4  
+	</select>
+	<!-- 관리자id 중복검사 -->
+  	<select id="chkAdminId" parameterType="String" resultType="int">
+  		select count(*) from user where user_id=#{adminId}
+  	</select>
+	<!-- 유저 등록 -->
+	<insert id="insertUser" parameterType="com.university.nuri.vo.commonvo.UserVO" >  	
+	 		 	insert into user(user_level, user_id, user_pw, name, phone, email, status, birth) 
+	  			 values(#{user_level}, #{user_id}, #{user_pw}, #{name}, #{phone}, #{email}, #{status}, #{birth})  
+  	</insert> 
+  	<!-- 관리자 등록 -->
+	<insert id="insertAdmin" parameterType="com.university.nuri.vo.adminvo.AdminVO">
+  		insert into admin (user_idx, a_grade)  
+  		 values(#{user_idx}, #{a_grade})   	
+  	</insert>
+  	
+  	<!-- 관리자 usser_id 추출 -->
+  	<select id="selectUserIdx" parameterType="com.university.nuri.vo.commonvo.UserVO" resultType="String">
+  		select user_idx from user where user_id = #{user_id}
+  	</select>
+  
+  <!-- 관리자 조건검색 -->
+  <select  id="searchAdmin" parameterType="map" resultType="map">
+  		select u.*, a.*  
+        from user u 
+        join admin a on u.user_idx = a.user_idx
+        <where>
+        	 u.active = 0 	and a.a_active = 0  and u.status = 4  
+            <if test="name != null and name != ''">
+                AND u.name LIKE CONCAT('%', #{name}, '%') 
+            </if>
+            <if test="a_grade != null and a_grade != ''">
+                AND a.a_grade = #{a_grade} 
+            </if>
+        </where>
+  </select>
+  
+  <!-- 관리자 상세보기 -->
+  <select id="getAdminDetail" parameterType="String" resultType="map">
+  		select u.*, a.* 
+		from user u  
+		join admin a on u.user_idx = a.user_idx  
+		where u.user_idx = #{user_idx} 
+  </select>
+  <!-- 관리자 삭제 -->
+  <update  id="deleteAdmin" parameterType="String">
+  	update admin set  a_active = 1 where user_idx = #{user_idx}
+  </update>
+  <!-- 관리자 유저 삭제 -->
+  <update  id="deleteUser" parameterType="String">
+  	update user set  active = 1 where user_idx = #{user_idx}
+  </update>
+  <!-- 관리자 수정 -->
+  <update  id="updateUser" parameterType="com.university.nuri.vo.commonvo.UserVO">
+  	update user set name = #{name}, phone = #{phone}, email = #{email}, status = #{status}, birth = #{birth} where user_idx = #{user_idx}
+  </update>
+  <!-- 관리자 유저수정 -->
+  <update  id="updateAdmin" parameterType="com.university.nuri.vo.adminvo.AdminVO">
+  	update admin set  a_grade = #{a_grade} where user_idx = #{user_idx}
+  </update>
+  
+
+  
+</mapper>

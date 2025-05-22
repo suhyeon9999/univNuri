@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tdashboard">
+	<select id="getTInfo" parameterType="String" resultType="map">
+		SELECT u.name, d.dept_name, u.user_id
+		FROM teacher t
+		join user u on t.user_idx = u.user_idx
+		join department d on d.dept_idx = t.dept_idx
+		WHERE t.t_idx= #{t_idx}
+	</select>
+	<select id="getobjectCount" parameterType="String"
+		resultType="int">
+		select count(*)
+		from objection o
+		join enroll e on o.enroll_idx = e.enroll_idx
+		join lecture l on l.lect_idx = e.lect_idx
+		where l.t_idx = #{t_idx} and
+		objection_status = 1 
+	</select>
+	<select id="getAllLecCount" parameterType="String"
+		resultType="int">
+		select count(*)
+		from lecture l
+		where l.t_idx = #{t_idx}
+	</select>
+	<select id="tthisLectList" parameterType="String"
+		resultType="map">
+		SELECT
+		l.lect_idx,
+		l.lect_name,
+		l.lect_start_time,
+		l.lect_end_time,
+		l.lect_day,
+		c.class_room,
+		c.class_building,
+		COUNT(e.s_idx) AS student_count
+		FROM lecture AS l
+		JOIN class AS c ON l.class_idx = c.class_idx
+		JOIN enroll AS e ON l.lect_idx = e.lect_idx
+		WHERE
+		l.t_idx = #{t_idx} AND
+		e.enroll_status = 1 AND
+		l.lect_active = 0 AND
+		l.lect_start_date &lt;= CURRENT_TIMESTAMP AND
+		CURRENT_TIMESTAMP &lt;= l.lect_end_date
+		GROUP BY
+		l.lect_idx,
+		l.lect_name,
+		l.lect_start_time,
+		l.lect_end_time,
+		l.lect_day,
+		c.class_room,
+		c.class_building;
+	</select>
+	<select id="todayLectList" parameterType="map" resultType="map">
+		SELECT DISTINCT 
+		l.lect_idx,
+		l.lect_name,
+		l.lect_start_time,
+		l.lect_end_time,
+		l.lect_day,
+		c.class_room,
+		c.class_building
+		FROM lecture l
+		JOIN class c ON l.class_idx = c.class_idx
+		JOIN enroll AS e ON l.lect_idx = e.lect_idx
+		WHERE
+		e.enroll_status = 1 AND
+		l.t_idx = #{t_idx}
+		AND l.lect_active = 0
+		AND l.lect_day LIKE CONCAT('%', #{lect_day}, '%')
+		AND CURRENT_DATE BETWEEN l.lect_start_date AND l.lect_end_date
+	</select>
+</mapper>
+
+
+
+

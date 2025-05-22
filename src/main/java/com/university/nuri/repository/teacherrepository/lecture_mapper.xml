@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lecture">
+	<select id="lectureInfo" parameterType="String" resultType="map">
+		SELECT
+		l.lect_name,
+		l.lect_id,
+		u.name,
+		l.lect_credit,
+		l.lect_day,
+		l.lect_start_time,
+		l.lect_end_time,
+		c.class_building,
+		c.class_room,
+		l.lect_start_date,
+		l.lect_end_date
+		FROM
+		lecture l
+		JOIN
+		teacher t ON l.t_idx
+		= t.t_idx
+		JOIN
+		class c ON l.class_idx = c.class_idx
+		JOIN
+		user u ON
+		t.user_idx =
+		u.user_idx
+		WHERE
+		l.lect_idx = #{lect_idx};
+	</select>
+	<select id="assignList" parameterType="map" resultType="map">
+		SELECT
+		a.assign_idx,
+		a.assign_title,
+		a.upload_time,
+		a.assign_due_date,
+		a.end,
+		COUNT(DISTINCT CASE WHEN s.submit_active = 0 THEN e.s_idx END)
+		AS submit_count,
+		COUNT(DISTINCT e.s_idx) AS total_students,
+		COUNT(DISTINCT e.s_idx) - COUNT(DISTINCT CASE WHEN s.submit_active = 0
+		THEN e.s_idx
+		END) AS unsubmit_count
+		FROM assign a
+		JOIN enroll e ON
+		e.lect_idx = a.lect_idx AND e.enroll_status = 1
+		LEFT JOIN submit s ON
+		s.assign_idx = a.assign_idx AND s.enroll_idx =
+		e.enroll_idx
+		WHERE
+		a.lect_idx = #{lect_idx} AND a.assign_active = 0
+		<if test="end != null and end != 'all'">
+			AND end = #{end}
+		</if>
+		GROUP BY a.assign_idx, a.assign_title, a.upload_time,
+		a.assign_due_date
+		ORDER BY a.assign_idx;
+	</select>
+
+
+	<select id="getExamList" parameterType="String"
+		resultType="com.university.nuri.vo.teachervo.TestMakeVO">
+		select *
+		from test_make
+		where lect_idx = #{lect_idx} and
+		active=0
+	</select>
+	<select id="midExist" parameterType="String" resultType="int">
+		select
+		count(*)
+		from test_make
+		where lect_idx = #{lect_idx} and mid_final =0
+		and active=0;
+	</select>
+	<select id="finalExist" parameterType="String" resultType="int">
+		select count(*)
+		from test_make
+		where lect_idx = #{lect_idx} and
+		mid_final =1 and active=0;
+	</select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="teacher"> 
+
+	<!-- 선생 등록 -->
+	<insert id="insertTeacher" parameterType="com.university.nuri.vo.teachervo.TeacherVO">  	
+	insert into teacher (user_idx, dept_idx, t_dept_chair, t_active) 
+    VALUES(#{user_idx}, #{dept_idx}, #{t_dept_chair},DEFAULT)
+  	</insert> 
+  	<!-- 선생 년도 조회 -->
+  	<select id="yearcount" resultType="int">
+    	SELECT COUNT(*) FROM teacher t JOIN user u ON t.user_idx = u.user_idx WHERE YEAR(u.created_date) = #{yearstr} AND t.dept_idx = #{deptIdx}
+  	</select>
+<update id="updateTeacher" parameterType="com.university.nuri.vo.teachervo.TeacherVO">
+  UPDATE department
+  SET t_idx = #{t_idx}
+  WHERE dept_idx = #{dept_idx}
+</update>
+<select id="selectTidxByUserIdx" parameterType="string" resultType="string">
+  SELECT t_idx FROM teacher WHERE user_idx = #{user_idx}
+</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

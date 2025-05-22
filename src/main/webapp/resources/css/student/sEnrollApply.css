@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+/* 검색관련 학과,강의명,교수명,강의요일,과목코드 */
+	form{
+		width: 100%;
+	}
+  .selector{
+  	display: flex;
+  	flex-direction: row;
+  	 width: 100%;
+  }
+  .selector li label{
+  	width: 106px;
+  	float: left;
+  	align-content: center;
+ 	height: 100%;
+  }
+   .selector li:not(:last-child){
+  	margin-right: 6%;
+  }
+ /* 테이블 관련 */
+ table{
+ 	  margin-top: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      border-collapse: collapse;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 50px;
+ }
+ th{
+ 	background-color: #e8edf9;
+ }
+ td,th{
+ 	border: 1px solid #ccc;
+ 	padding: 8px;
+ 	 }
+ 	/* 수강신청내역 정렬 */
+.title-credit-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* 또는 center 시도 가능 */
+  width: 100%px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.credit-summary-box {
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 4px;   /* ✅ 위쪽 살짝 내려줌 */
+}
+.highlight h2{
+ 	align-content: center;
+ 	height: 100%;
+}
+.highlight-credit {
+  color: red;
+  font-weight: bold;
+}

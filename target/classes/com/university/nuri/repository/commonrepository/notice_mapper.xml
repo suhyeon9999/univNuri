@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice">
+	<!-- 공지사항 등록 -->
+	<insert id="insertNotice"
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO">
+		insert into notice(admin_idx, title, content, necessary)
+		values (#{admin_idx}, #{title}, #{content}, #{necessary})
+	</insert>
+	<!-- 전체 게시물 계산 -->
+	<select id="getCountNotice" resultType="int">
+		select count(*) from
+		notice where notice_active = 0
+	</select>
+	<!-- 중요공지 최신5개 불러오기 -->
+	<select id="getNecessaryNoticeList" resultType="map">
+		select n.* ,
+		a.a_grade
+		from notice n
+		left join admin a on n.admin_idx = a.admin_idx
+		where n.necessary != 0 and n.notice_active = 0
+		order by n.notice_idx desc limit 5
+	</select>
+	<!-- 중요공지 최신5개 idx -->
+	<select id="getNecessaryNoticeIdx" resultType="map">
+		select notice_idx
+		from notice
+		where necessary != 0 and notice_active = 0
+		order by notice_idx desc limit 5
+	</select>
+	<!-- 공지사항 리스트 불러오기 -->
+	<select id="getAllNoticeList" resultType="map"
+		parameterType="map">
+		select n.* , a.a_grade
+		from notice n
+		left join admin a on n.admin_idx = a.admin_idx
+		where n.notice_active = 0
+		order by n.notice_idx desc
+		<if test="start != null and end != null">
+			LIMIT #{start}, #{end}
+		</if>
+	</select>
+	<!-- 공지사항 자세히보기 -->
+	<select id="detailNotice"
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO"
+		resultType="map">
+		select * from notice where notice_idx =#{notice_idx}
+	</select>
+	<select id="previousNotice"
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO"
+		resultType="map">
+		select notice_idx, title from notice 
+		<![CDATA[  
+		 where  notice_idx  < #{notice_idx} 
+		  ]]>
+		order by notice_idx desc
+		limit 1
+	</select>
+	<select id="nextNotice"
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO"
+		resultType="map">
+		select notice_idx, title from notice  
+		<![CDATA[  
+		where notice_idx  > #{notice_idx}  
+		 ]]>
+		order by notice_idx asc
+		limit 1
+	</select>
+	<!-- 검색해당 게시물 수 -->
+	<select id="getSearchNoticeCount" parameterType="string"
+		resultType="int">
+		select count(*) from notice
+		where (title like concat('%', #{search}, '%')
+		or content like concat('%', #{search}, '%'))
+		and notice_active = 0
+	</select>
+	<!-- 공지사항 조건 검색 -->
+	<select id="searchNotice" parameterType="map" resultType="map">
+		select n.*, a.a_grade
+		from notice n
+		left join admin a on n.admin_idx = a.admin_idx
+		where (title like concat('%', #{search}, '%')
+		or content like concat('%', #{search}, '%'))
+		and n.notice_active = 0
+		order by n.notice_idx desc
+		<if test="start != null and end != null">
+			LIMIT #{start}, #{end}
+		</if>
+	</select>
+
+	<!-- 공지사항 수정 -->
+	<update id="noticeUpdate"
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO">
+		update notice set title=#{title}, content=#{content},
+		necessary=#{necessary}
+		where notice_idx=#{notice_idx}
+	</update>
+
+	<!-- 공지사항 삭제 -->
+	<update id="deleteNotice" parameterType="String">
+		update notice set
+		notice_active= 1
+		where notice_idx=#{notice_idx}
+	</update>
+
+
+	<!-- FAQ -->
+	<!-- faq카운트 -->
+	<!-- 전체 게시물 계산 -->
+	<select id="getCountFaq" resultType="int">
+		select count(*) from faq
+		where faq_active = 0
+	</select>
+	<!-- faq 전체게시물 불러오기 -->
+	<select id="getAllFaqList" resultType="map" parameterType="map">
+		select f.* , a.a_grade
+		from faq f
+		left join admin a on f.admin_idx = a.admin_idx
+		where f.faq_active = 0
+		order by f.faq_idx desc
+		<if test="start != null and end != null">
+			LIMIT #{start}, #{end}
+		</if>
+	</select>
+	<!-- 검색해당 게시물 수 -->
+	<select id="getSearchFaqCount" parameterType="string"
+		resultType="int">
+		select count(*) from faq 
+		where (title like concat('%', #{search}, '%') 
+		or content like concat('%', #{search}, '%')) 
+		and faq_active = 0 
+	</select>
+	<!-- faq 조건 검색 -->
+	<select id="searchFaq" parameterType="map" resultType="map">
+		select f.* , a.a_grade 
+		from faq f 
+		left join admin a on f.admin_idx = a.admin_idx 
+		where (title like concat('%', #{search}, '%') 
+		or content like concat('%', #{search}, '%')) 
+		and f.faq_active = 0 
+		order by f.faq_idx desc 
+		<if test="offset != null and limit != null">
+		    LIMIT #{offset}, #{limit}
+		</if> 
+	</select>
+	<!-- faq 자세히보기 -->
+	<select id="detaiFaq"
+		parameterType="com.university.nuri.vo.commonvo.FaqVO" resultType="map">
+		select * from faq where faq_idx =#{faq_idx}
+	</select>
+	<select id="nextFaq"
+		parameterType="com.university.nuri.vo.commonvo.FaqVO" resultType="map">
+		select faq_idx, title from faq 
+		<![CDATA[  
+		 where  faq_idx  < #{faq_idx} 
+		  ]]>
+		order by faq_idx desc
+		limit 1
+	</select>
+	<select id="previousFaq"
+		parameterType="com.university.nuri.vo.commonvo.FaqVO" resultType="map">
+		select faq_idx, title from faq  
+		<![CDATA[  
+		where faq_idx  > #{faq_idx}  
+		 ]]>
+		order by faq_idx asc
+		limit 1
+	</select>
+	<!-- faq 등록 -->
+	<insert id="faqInsert"
+		parameterType="com.university.nuri.vo.commonvo.FaqVO">
+		insert into faq(admin_idx, title, content)
+		values
+		(#{admin_idx}, #{title}, #{content})
+	</insert>
+	<!-- faq 수정 -->
+	<update id="faqUpdate"
+		parameterType="com.university.nuri.vo.commonvo.FaqVO">
+		update faq set title=#{title}, content=#{content}
+		where faq_idx=#{faq_idx}
+	</update>
+	<!--faq 삭제 -->
+	<update id="deleteFaq" parameterType="String">
+		update faq set faq_active=
+		1
+		where faq_idx=#{faq_idx}
+	</update>
+
+</mapper>

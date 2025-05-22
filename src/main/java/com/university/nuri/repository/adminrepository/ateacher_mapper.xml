@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ateacher">
+	<select id="getTeacherList" resultType="map">
+		SELECT
+		t.t_idx AS t_idx, t.t_dept_chair, 
+		u.user_id AS user_id,
+		u.name AS name,
+		d.dept_name AS dept_name,
+		u.created_date AS created_date,
+		u.status AS status
+		FROM teacher t
+		JOIN
+		user u ON t.user_idx = u.user_idx
+		JOIN department d ON t.dept_idx =
+		d.dept_idx
+		WHERE u.active = 0 AND u.status = 4 AND t.t_active = 0
+		ORDER BY t.t_idx ASC
+	</select>
+
+	<select id="getFilteredTeacherList" parameterType="map"
+		resultType="map">
+		SELECT t.t_idx AS t_idx,
+		u.user_id AS user_id,
+		u.name AS name,
+		d.dept_name AS dept_name,
+		u.created_date AS created_date,
+		u.status AS
+		status
+		FROM teacher t
+		JOIN user u ON
+		t.user_idx = u.user_idx
+		JOIN
+		department d ON t.dept_idx = d.dept_idx
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			u.active = 0 AND u.status = 4
+			AND t.t_active = 0
+
+			<if test="name != null and name != ''">
+				AND u.name LIKE CONCAT('%', #{name}, '%')
+			</if>
+			<if test="user_id != null and user_id != ''">
+				AND u.user_id LIKE CONCAT('%', #{user_id}, '%')
+			</if>
+		</trim>
+		ORDER BY t.t_idx ASC
+	</select>
+	<select id="getDetailTeacher" parameterType="String"
+		resultType="map">
+		SELECT
+		u.name, u.birth, u.user_id, u.status, u.email,
+		u.phone, t.t_idx, t.dept_idx, d.dept_name, t.t_dept_chair 
+		FROM teacher t
+		JOIN user u ON
+		t.user_idx = u.user_idx
+		JOIN department d ON t.dept_idx = d.dept_idx
+		WHERE u.user_id = #{user_id}
+	</select>
+
+	<select id="getDeptList" resultType="map">
+		SELECT dept_idx, dept_name
+		FROM department WHERE dept_active = 0
+		ORDER BY dept_idx ASC
+	</select>
+	<update id="getUpdateUserTable" parameterType="map">
+		UPDATE user
+		SET
+		name = #{name},
+		birth = #{birth},
+		email = #{email},
+		phone = #{phone}, 
+		status = #{status} 
+		WHERE user_id = #{user_id}
+	</update>
+	<update id="getUpdateTeacherTable" parameterType="map">
+		UPDATE teacher
+		SET
+		dept_idx = #{dept_idx}, 
+		t_dept_chair = #{t_dept_chair}
+		WHERE user_idx = (
+		SELECT
+		user_idx FROM user
+		WHERE user_id = #{user_id}
+		)
+	</update>
+	<select id="getATeacherCheckPassword" parameterType="String"
+		resultType="String">
+		SELECT user_pw
+		FROM user
+		WHERE user_id = #{user_id}
+	</select>
+	<update id="getDeleteTUserTable" parameterType="String">
+		UPDATE user
+		SET
+		active = 1
+		WHERE user_id = #{user_id}
+	</update>
+	<update id="getDeleteTeacherTable" parameterType="Integer">
+		UPDATE teacher
+		SET
+		t_active = 1
+		WHERE t_idx = #{t_idx}
+	</update>
+
+	<!-- 부서명으로 부서번호 조회 -->
+	<select id="getDeptIdxByName" parameterType="string"
+		resultType="int">
+		SELECT dept_idx
+		FROM department
+		WHERE dept_name =
+		#{dept_name}
+	</select>
+	<!-- 해당 연도에 학과별로 등록된 선생 수 조회 => 이거 안 돌아갈 듯..이렇게 하면 안 됨... -->
+	<select id="yearcount" parameterType="map" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM teacher t
+		JOIN user u ON t.user_idx = u.user_idx
+		WHERE
+		YEAR(u.created_date) = #{yearstr}
+		AND t.dept_idx = #{deptIdx}
+	</select>
+	<insert id="insertUserVO"
+		parameterType="com.university.nuri.vo.commonvo.UserVO"
+		useGeneratedKeys="true" keyProperty="user_idx">
+		INSERT INTO user (
+		user_id,
+		user_pw, name, birth, phone, email, user_level, status
+		) VALUES (
+		#{user_id}, #{user_pw}, #{name}, #{birth}, #{phone}, #{email},
+		#{user_level},
+		#{status}
+		)
+	</insert>
+	<!-- student 테이블 insert -->
+	<insert id="insertTeacherVO"
+		parameterType="com.university.nuri.vo.teachervo.TeacherVO">
+		INSERT INTO teacher (
+		user_idx, dept_idx,
+		t_dept_chair
+		) VALUES (
+		#{user_idx},
+		#{dept_idx},
+		#{t_dept_chair}
+		)
+	</insert>
+	<select id="getTIdx" parameterType="String" resultType="String">
+		SELECT t.t_idx
+		FROM user u 
+		JOIN teacher t ON u.user_idx = t.user_idx 
+		WHERE user_id=#{user_id}
+	</select>
+		<select id="getUserLevel" parameterType="String" resultType="String">
+		SELECT u.user_level
+		FROM user u 
+		JOIN teacher t ON u.user_idx = t.user_idx 
+		WHERE user_id=#{user_id}
+	</select>
+</mapper>

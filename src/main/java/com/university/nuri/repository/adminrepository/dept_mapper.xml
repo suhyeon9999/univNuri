@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper  namespace="department">
+  	<!-- 전체 학과 리스트 불러오기 -->
+  	<select id="getAllDeptList" resultType="map">
+  		select d.*, u.name   
+  		from department d 
+  		left join teacher t on d.t_idx = t.t_idx 
+  		left join user u on t.user_idx = u.user_idx 
+  		where d.dept_active = 0  		 
+  	</select>
+  	<!-- depi_id 중복검사 -->
+  	<select id="chkDeptId" parameterType="String" resultType="int">
+  		select count(*) from department where dept_id=#{deptid}
+  	</select>
+  	<!-- 학과등록 -->
+  	<insert id="insertDept" parameterType="com.university.nuri.vo.adminvo.DepartMentVO" useGeneratedKeys="true" keyProperty="dept_idx">
+  		insert into department(dept_id, dept_name ) 
+  		 values(#{dept_id}, #{dept_name})
+  	</insert>
+  	<!-- 학과명검색 -->
+  	<select id="searchDeptName" parameterType="String" resultType="map">
+  		select * from department where dept_name like CONCAT('%', #{value}, '%') and dept_active = 0
+  	</select>
+  	<!-- 학과장검색 -->
+  	<select id="searchTName" parameterType="String" resultType="map">
+  		select * from department where t_name like CONCAT('%', #{value}, '%') and dept_active = 0
+  	</select>
+  	<!-- 학과장 미배정 학과 보기 -->
+  	<select id="searchNullTIdx" resultType="map">
+  		select * from department where t_idx is null and dept_active = 0
+  	</select>
+  	<!-- 학과 상세보기 -->
+  	<select  id="detailDept" parameterType="String" resultType="map">
+  		select d.*, u.name   
+  		from department d 
+  		left join teacher t on d.t_idx = t.t_idx 
+  		left join user u on t.user_idx = u.user_idx  
+  		where d.dept_idx = #{dept_idx} 
+  	</select>
+  	<!-- 해당 학과 교수 조회 -->
+  	<select id="teacherList" parameterType="String" resultType="map">
+		select u.*, t.t_idx 
+		from user u  
+		join teacher t on u.user_idx = t.user_idx 
+		where t.dept_idx = #{dept_idx} and t.t_active = 0
+	</select>
+	<!-- 학과정보 수정 -->
+	<update id="updateDept" parameterType="com.university.nuri.vo.adminvo.DepartMentVO">
+			update department
+	    <set>
+	        dept_name = #{dept_name}
+	        <if test="t_idx != 0">, t_idx = #{t_idx}</if>
+	    </set>
+	    where dept_idx = #{dept_idx}
+	</update>
+	<!-- 교수idx 추출 -->
+	<select id="selectTIdx" parameterType="com.university.nuri.vo.commonvo.UserVO" resultType="String">
+		select t_idx from department where t_idx = #{t_idx}
+	</select>
+	<!-- 기존 학과장 변경  -->
+	<update id="changeChair" parameterType="com.university.nuri.vo.adminvo.DepartMentVO" >
+		UPDATE teacher 
+    	SET t_dept_chair = 0 
+   		 WHERE dept_idx = #{dept_idx} AND t_dept_chair = 1;
+	</update>
+	
+	<!-- 교수한테 가서 학과장 여부 변경  -->
+	<update id="updateTeacher" parameterType="com.university.nuri.vo.adminvo.DepartMentVO">
+		update teacher set  t_dept_chair = 1 where t_idx = #{t_idx}
+	</update>
+	
+	<!-- 학과 삭제 -->
+	<update id="deleteDept" parameterType="com.university.nuri.vo.adminvo.DepartMentVO" >
+		UPDATE department  
+    	SET dept_active = 1  
+   		 WHERE dept_idx = #{dept_idx} 
+	</update>
+	
+	
+	
+	
+	
+	
+  </mapper>

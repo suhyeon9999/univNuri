@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="onequestion">
+
+	<!-- 게시글 리스트 조회 -->
+	<select id="getBoardList" resultType="map">
+		SELECT
+		b.*,
+		DATE_FORMAT(b.write_date, '%Y-%m-%d %H:%i') AS write_date,
+		IFNULL(DATE_FORMAT(a.write_date, '%Y-%m-%d %H:%i'), '-') AS answer_date,
+
+		CASE
+		WHEN a.answer_idx IS NULL OR a.answer_active = 1 THEN '답변대기'
+		ELSE '답변완료'
+		END AS answer_status,
+
+		u1.user_id AS student_user_id,
+		u1.name AS student_name,
+		u2.name AS admin_name
+
+		FROM board b
+		LEFT JOIN answer a ON b.board_idx =
+		a.board_idx
+		LEFT JOIN student s ON b.s_idx = s.s_idx
+		LEFT JOIN user u1
+		ON s.user_idx = u1.user_idx
+		LEFT JOIN admin ad ON a.admin_idx =
+		ad.admin_idx
+		LEFT JOIN user u2 ON ad.user_idx = u2.user_idx
+
+		WHERE
+		b.board_active = 0
+		ORDER BY b.board_idx DESC
+	</select>
+
+	<!-- 게시글 상세 조회 -->
+	<select id="getBoardDetail" parameterType="Integer" resultType="map">
+		SELECT
+			b.board_idx AS board_idx,
+			DATE_FORMAT(b.write_date, '%Y-%m-%d %H:%i') AS write_date,
+			b.title,
+			b.content AS write_content,
+			b.answer_read, 
+			CASE
+				WHEN a.answer_idx IS NULL OR a.answer_active = 1 THEN '답변대기'
+				ELSE '답변완료'
+			END AS answer_status,
+			IFNULL(DATE_FORMAT(a.write_date, '%Y-%m-%d %H:%i'), '-') AS answer_date,
+			a.content AS answer_content,
+			u.user_id AS student_user_id,
+			u.name AS writer_name,
+			au.user_id AS admin_user_id,
+			au.name AS admin_name
+		FROM board b
+		LEFT JOIN answer a ON b.board_idx = a.board_idx
+		LEFT JOIN student s ON b.s_idx = s.s_idx
+		LEFT JOIN user u ON s.user_idx = u.user_idx
+		LEFT JOIN admin ad ON a.admin_idx = ad.admin_idx
+		LEFT JOIN user au ON ad.user_idx = au.user_idx
+		WHERE b.board_idx = #{board_idx}
+	</select>
+
+
+
+	<!-- 검색 필터링 -->
+	<select id="getFilteredBoardList" parameterType="map"
+		resultType="map">
+		SELECT
+		b.board_idx,
+		b.title,
+		b.content,
+		DATE_FORMAT(b.write_date, '%Y-%m-%d') AS write_date,
+		IFNULL(DATE_FORMAT(a.write_date, '%Y-%m-%d'), '-') AS answer_date,
+
+		CASE
+		WHEN a.answer_idx IS NULL OR a.answer_active = 1 THEN '답변대기'
+		ELSE '답변완료'
+		END AS answer_status,
+
+		u1.user_id AS student_user_id,
+		u1.name AS student_name,
+		u2.user_id AS admin_user_id,
+		u2.name AS admin_name
+
+		FROM board b
+		LEFT JOIN answer a ON b.board_idx =
+		a.board_idx
+		LEFT JOIN student s ON b.s_idx = s.s_idx
+		LEFT JOIN user u1
+		ON s.user_idx = u1.user_idx
+		LEFT JOIN admin ad ON a.admin_idx =
+		ad.admin_idx
+		LEFT JOIN user u2 ON ad.user_idx = u2.user_idx
+
+		<where>
+			b.board_active = 0
+
+			<if test="student_name != null and student_name != ''">
+				AND u1.name LIKE CONCAT('%', #{student_name}, '%')
+			</if>
+			<if test="student_user_id != null and student_user_id != ''">
+				AND u1.user_id LIKE CONCAT('%', #{student_user_id}, '%')
+			</if>
+			<if test="title != null and title != ''">
+				AND b.title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="board_staus != null and board_staus != ''">
+				AND CASE
+				WHEN a.answer_idx IS NULL OR a.answer_active = 1 THEN '미답변'
+				ELSE '답변완료'
+				END = #{board_staus}
+			</if>
+			<if test="answer_date != null and answer_date != ''">
+				AND DATE(a.write_date) = #{answer_date}
+			</if>
+			<if test="admin_name != null and admin_name != ''">
+				AND u2.name LIKE CONCAT('%', #{admin_name}, '%')
+			</if>
+		</where>
+
+		ORDER BY b.board_idx DESC
+	</select>
+
+	<!-- 답변 수정 -->
+	<update id="boardAnswerUpdateOk" parameterType="map">
+		UPDATE answer
+		SET
+		content = #{content}, write_date = NOW()
+		WHERE board_idx = #{board_idx}
+	</update>
+
+	<!-- 답변 삭제 (활성 상태 변경) -->
+	<update id="boardAnswerDeleteOk" parameterType="int">
+		UPDATE answer
+		SET
+		answer_active = 1
+		WHERE board_idx = #{board_idx}
+	</update>
+
+	<!-- 답변 존재 여부 확인 -->
+	<select id="existsAnswer" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM answer WHERE board_idx = #{board_idx}
+	</select>
+
+	<!-- 삭제되었던 답변 되살리기 (update) -->
+	<update id="insertAgainAnswer" parameterType="map">
+		UPDATE answer
+		SET content = #{content},
+		admin_idx = #{admin_idx},
+		write_date = NOW(),
+		answer_active = 0
+		WHERE board_idx = #{board_idx}
+	</update>
+
+	<!-- 완전 처음 답변 insert -->
+	<insert id="insertAnswer" parameterType="map">
+		INSERT INTO answer (admin_idx, board_idx, content)
+		VALUES (#{admin_idx}, #{board_idx}, #{content})
+	</insert>
+
+</mapper>

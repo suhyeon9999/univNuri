@@ -1,0 +1,130 @@
+@charset "UTF-8";
+/* 검색관련 학과,강의명,교수명,강의요일,과목코드 */
+	form{
+		width: 100%;
+		float: right;
+		display: inline-block;
+	}
+  .selector{
+  	display: flex;
+  	flex-direction: row;
+  	 width: 100%;
+  	 align-content: space-between;
+  	 height: auto;
+  }
+  .selector li label{
+   align-content: center;
+  	height: auto;
+  	width: 50px;
+  	float: left;
+  	margin-left: 20px; 
+  }
+   .selector li:not(:last-child){
+  	margin-right: 30px;
+  	 align-content: center;
+  	  text-align: center;
+
+  }
+   .selector li:last-child{
+ 	text-align: right;
+ 	width: auto;
+   }
+      .assign-list div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .assign-list div p {
+        margin: 2px;
+      }
+      .assign-list h2{
+      	width: 350px;
+      }
+      .submit {
+        color: blue;
+      }
+      .not-submit {
+        color: red;
+      }
+      .search-box{
+      	display: flex;
+      	justify-content: flex-start;
+      	gap: 10px;
+      	align-items: center;
+      }
+      .search-btn{
+      margin: 10px 0;
+        padding: 10px;
+        border: none;
+        background-color: orange;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 35px;
+    }
+      .link-black{
+      	color: black;
+      }
+        .main-container {
+        background-color: #f2f2f2;
+        padding: 10px 20px 20px 20px;
+       	margin-top: 20px;
+       	border-radius: 10px;
+      }
+
+      .main-top {
+        display: flex;
+        justify-content: space-between;
+      }
+      #assign-btn {
+        background-color: #3f3fa6;
+        color: white;
+        width: 80px;
+        height: 38px;
+        padding: 5px;
+        border-radius: 5px;
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+      } 
+      .count {
+        margin: 0;
+      }
+      .count span {
+        color: orange;
+      }
+
+      .assign-list {
+        background-color: white;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        align-items: center;
+        margin: 4px;
+        height: 90px;
+      }
+/* 수강신청내역 정렬 */
+.title-credit-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* 또는 center 시도 가능 */
+  width: 100%px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.top {
+	font-weight: bold;
+}
+
+.bottom {
+	color: orange;
+	font-size: 15px;
+	text-align: center;
+}
+
+.white-block-container{
+	max-height: 600px;
+	overflow-y: auto;
+}

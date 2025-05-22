@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adashboard">
+	<!-- 1. 전체 학생 수 -->
+	<select id="getStudentCount" resultType="int">
+	  SELECT COUNT(*)
+	  FROM student s
+	  JOIN user u ON s.user_idx = u.user_idx
+	  WHERE s.s_active = 0
+	    AND u.active = 0
+	    AND u.status IN (1, 2)
+	</select>
+
+	<!-- 2. 전체 교직원 수 (교수) -->
+	<select id="getTeacherCount" resultType="int">
+	  SELECT COUNT(*)
+	  FROM teacher t
+	  JOIN user u ON t.user_idx = u.user_idx
+	  WHERE t.t_active = 0
+	    AND u.active = 0
+	    AND u.status = 4
+	</select>
+
+  <!-- 3. 전체 학과 수 -->
+  <select id="getDeptCount" resultType="int">
+    SELECT COUNT(*) FROM department WHERE dept_active = 0
+  </select>
+
+  <!-- 4. 금학기 강의 수 -->
+  <select id="getCurrentLectureCount" resultType="int">
+    SELECT COUNT(*) FROM lecture 
+    WHERE lect_active = 0 
+      AND CURDATE() BETWEEN lect_start_date AND lect_end_date
+  </select>
+
+  <!-- 5. 처리 대기 중인 학적변경 신청 수 -->
+  <select id="getPendingRequestCount" resultType="int">
+    SELECT COUNT(*) FROM request
+    WHERE req_active = 0 AND req_response = 0
+  </select>
+
+  <!-- 6~7. 수강신청 오픈 정보 + 개강예정 강의 수 -->
+  <select id="getEnrollApplyInfo" resultType="map"> <!-- 쓰는분 있으실수도 있어서 일단 안지울게요 -->
+    SELECT 
+      DATE_FORMAT(ea.start_time, '%Y-%m-%d') AS start_date,
+      DATE_FORMAT(ea.start_time, '%H:%i') AS start_time,
+      DATE_FORMAT(ea.end_time, '%Y-%m-%d') AS end_date,
+      DATE_FORMAT(ea.end_time, '%H:%i') AS end_time
+    FROM enroll_apply ea
+    ORDER BY ea.enroll_apply_idx DESC
+    LIMIT 1
+  </select>
+  
+  
+  
+    <select id="getEnrollApplyDashBoard" resultType="map">
+SELECT 
+
+      DATE_FORMAT(ea.start_time, '%Y-%m-%d') AS start_date,
+      DATE_FORMAT(ea.start_time, '%H:%i') AS start_time,
+      DATE_FORMAT(ea.end_time, '%Y-%m-%d') AS end_date,
+      DATE_FORMAT(ea.end_time, '%H:%i') AS end_time
+FROM enroll_apply ea
+WHERE YEAR(year) = YEAR(CURDATE())
+  AND semester = CASE 
+                      WHEN MONTH(CURDATE()) BETWEEN 1 AND 6 THEN 1
+                      ELSE 2
+                    END
+  
+  AND active = 0;
+ 
+  </select>
+</mapper>

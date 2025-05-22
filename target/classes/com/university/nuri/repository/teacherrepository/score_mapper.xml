@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t_score">
+
+
+<!-- // 입력완료된 학생 수 찾기 -->
+<select id="scoreInputComplete" resultType="int">
+select count(distinct e.s_idx) from score as s
+join enroll as e on e.enroll_idx = s.enroll_idx
+join lecture as l on l.lect_idx = e.lect_idx
+where l.lect_idx = #{lect_idx} and s.score_total is not null;
+
+
+
+</select>
+
+<!-- 	// 성적관리메인에서 강의 선택해서 해당 강의 수강하는 학생들의 성적 리스트 전체 혹은 이름이나 학번으로 검색 조회 -->
+<select id="scoreDetail" resultType="map">
+
+select * from lecture as l 
+join enroll as e on l.lect_idx = e.lect_idx
+join student as stu on stu.s_idx = e.s_idx
+join user as u on u.user_idx = stu.user_idx
+join score as s on s.enroll_idx = e.enroll_idx
+where e.enroll_status=1 and l.lect_active=0 and l.lect_idx = #{lect_idx}
+        <if test="name != null and name != ''">
+            AND u.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="user_id != null and user_id != ''">
+            AND u.user_id LIKE CONCAT('%', #{user_id}, '%')
+        </if>
+
+</select> 
+
+
+<!-- // 중간, 기말, 과제, 출석 점수, 토탈 점수 업데이트 -->
+<select id="getScoreUpdateOk" parameterType="map">
+update score
+set score_mid = #{score_mid}, score_final = #{score_final}, score_attend = #{score_attend}, score_assign = #{score_assign}, score_total = #{score_total}
+where enroll_idx=#{enroll_idx}
+</select>
+
+
+<select id="getLectureName" resultType="String">
+select lect_name
+from lecture
+where lect_idx = #{lect_idx}
+</select>
+
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<mvc:annotation-driven />
+
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<!-- controller에서 return 받은 MAV 안에 ViewName를 이용해서 view를 완성시킨다. -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	<!-- root-context.xml 에서 Service와 DAO를 등록 하므로
+		여기서는 Service 와 DAO등록 제외하고 Controller만 등록하자 
+	 -->
+	<context:component-scan	base-package="com.university">
+		<!-- context:exclude-filter 해당 xml 에서 특정 어노테이션만 제외 -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+		<!-- 파일 업로드용 클래스 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="52428000"/>
+		<beans:property name="defaultEncoding" value="UTF-8"/>
+	</beans:bean>
+	<!-- Interceptor -->
+	<mvc:interceptors>
+		<!-- 1. 로그인 체크가 필요한 페이지 경로 설정 -->
+		<mvc:interceptor>
+			        <!-- 인터셉터 적용 경로 -->
+        <mvc:mapping path="/**" />
+        
+        <!-- 로그인 없이 접근 허용할 경로들 -->
+        <mvc:exclude-mapping path="/" />
+        <mvc:exclude-mapping path="/user_login" />
+        <mvc:exclude-mapping path="/faqDetail" />
+        <mvc:exclude-mapping path="/deptOverview" />
+        <mvc:exclude-mapping path="/noticeList" />
+        <mvc:exclude-mapping path="/index" />
+        <mvc:exclude-mapping path="/login" />
+        <mvc:exclude-mapping path="/logout" />
+        <mvc:exclude-mapping path="/resources/css/**" />
+        <mvc:exclude-mapping path="/resources/images/**" />
+    	 <mvc:exclude-mapping path="/manual" />
+        <mvc:exclude-mapping path="/favicon.ico" />
+			<beans:bean class="com.university.nuri.controller.commoncontroller.LoginCheckInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+</beans:beans>

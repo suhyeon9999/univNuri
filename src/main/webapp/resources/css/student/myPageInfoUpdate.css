@@ -1,0 +1,352 @@
+@charset "UTF-8";
+
+body {
+	background-color: #F0F4F8;
+}
+
+.total-container {
+	margin: 20px;
+	max-width: 900px;
+}
+
+.title-container {
+	position: relative;
+	margin-left: 15px;
+}
+
+.highlight {
+	position: relative;
+	top: 45px;
+	width: 200px;
+	height: 13px;
+	z-index: 0;
+	background-color: #a8ecbc;
+}
+
+.title-container h1 {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+}
+
+.main-container {
+	padding: 10px 20px 20px 0px;
+	display: flex;
+}
+
+img {
+	width: 100%;
+	height: 236px;
+	object-fit: cover; /* 비율 유지 + 넘치는 부분 잘라냄 */
+	background-color: white;
+}
+
+#btn-picture {
+	width: 170px;
+	background-color: #fc522f;
+	color: white;
+	height: 38px;
+	padding: 5px;
+	border-radius: 5px;
+	border: none;
+	font-size: 15px;
+}
+
+#profile {
+	width: 170px;
+	margin-right: 100px;
+}
+
+#content {
+	width: 400px;
+}
+
+#content>* {
+	margin: 20px 0px;
+}
+
+#content>p {
+	color: gray;
+	font-weight: bold;
+}
+
+#content-top {
+	display: flex;
+	margin-top: 0px;
+}
+
+#content-top p {
+	font-size: 22px;
+	font-weight: bold;
+}
+
+#content-top p:not(:last-child) {
+	margin-right: 30px;
+}
+
+#student-status, #admin-status {
+	font-size: 22px;
+	font-weight: bold;
+	color: grey;
+}
+
+label {
+	width: 50px;
+}
+
+input {
+	padding: 5px;
+	margin-left: 5px;
+	border-radius: 5px;
+	float: right;
+	width: 230px;
+	background-color: white;
+}
+
+#input-form {
+	display: flex;
+}
+
+#num {
+	color: #404cac;
+}
+
+#dept, #a_grade {
+	color: gray;
+}
+
+#btn-password-change, #current-pw-chk, #change-pw-ok {
+	background-color: #404cac;
+	color: white;
+	width: 230px;
+	height: 35px;
+	padding: 5px;
+	border-radius: 5px;
+	border: none;
+	font-size: 15px;
+	float: right;
+}
+
+#btn-password-change {
+	background-color: green;
+}
+
+#current-pw-chk {
+	background-color: grey;
+}
+
+#btn-submit {
+	background-color: #404cac;
+	color: white;
+	width: 80px;
+	height: 38px;
+	padding: 5px;
+	border-radius: 5px;
+	border: none;
+	font-size: 15px;
+}
+
+#btn-change-pw {
+	background-color: #404cac;
+	color: white;
+	width: 180px;
+	height: 38px;
+	padding: 5px;
+	border-radius: 5px;
+	border: none;
+	font-size: 15px;
+}
+
+#btn-cancel {
+	background-color: #fc522f;
+	color: white;
+	width: 80px;
+	height: 38px;
+	padding: 5px;
+	border-radius: 5px;
+	border: none;
+	font-size: 15px;
+	margin-right: 5px;
+}
+
+.highlight, h1 {
+	display: inline-block;
+	float: left;
+}
+
+.title-container, .title-container button {
+	float: right;
+	width: 90px;
+}
+
+.title-container {
+	width: 100%;
+}
+
+.main-container2 {
+	display: flex;
+	flex-direction: column;
+	margin-top: 20px;
+	margin-bottom: 200px;
+}
+
+.main-container2 hr {
+	background-color: grey;
+	width: 100%;
+	height: 2px;
+	margin-bottom: 15px;
+}
+
+#address-find {
+	background-color: grey;
+}
+
+#addr1 {
+	margin-bottom: 10px;
+}
+
+.address-form {
+	display: flex;
+	align-items: flex-start;
+	margin-top: 10px;
+}
+
+.address-box {
+	display: flex;
+	flex-direction: column;
+	margin-left: 10px;
+}
+
+.address-box input {
+	width: 300px;
+	margin-bottom: 8px;
+}
+
+#password-change-form {
+	display: flex;
+	float: right;
+	width: 230px;
+}
+
+#password-change-form input {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.pw-msg {
+	margin-bottom: 5px;
+}
+
+#current-pw-chk-msg {
+	text-align: center;
+	font-size: 13px;
+}
+
+#new-pw-chk-msg {
+	text-align: center;
+	font-size: 13px;
+}
+
+#new-pw-msg {
+	margin-top: 30px;
+}
+
+#change-pw-ok-msg {
+	text-align: center;
+	font-size: 13px;
+	color: #fc522f;
+}
+
+input[type="date"] {
+	font-family: inherit;
+}
+
+.input-form[label="phone"], .input-form[label="email"], .input-form[label="birth"]
+	{
+	margin-right: 10px;
+}
+
+/* Modal 창 */
+/* Modal 전체 배경 */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+/* Modal 내부 컨텐츠 박스 */
+.modal-content {
+	background: #fff;
+	padding: 30px 40px;
+	border-radius: 12px;
+	text-align: center;
+	width: 100%;
+	max-width: 600px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 안내 메시지 스타일 */
+.pw-msg {
+	font-size: 14px;
+	color: #555;
+	margin: 10px 0 5px;
+}
+
+/* input 필드 공통 */
+.modal-content input[type="password"] {
+	width: 100%;
+	max-width: 400px;
+	padding: 10px;
+	float: none;
+	/* 	margin: 5px 0 15px; */
+	margin: 15px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+/* 버튼 공통 */
+.modal-content button {
+	padding: 10px 20px;
+	font-size: 14px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	margin: 8px;
+	transition: background-color 0.3s ease;
+	float: none;
+}
+
+/* 확인 버튼 스타일 */
+#current-pw-chk, #change-pw-ok {
+	background-color: #4CAF50;
+	color: white;
+}
+
+#current-pw-chk:hover, #change-pw-ok:hover {
+	background-color: #45a049;
+}
+/* 버튼 영역 묶어서 가운데 정렬 */
+.modal-buttons {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+/* 취소 버튼 스타일 */
+.btn-red {
+	background-color: #f44336;
+	color: white;
+}
+
+.btn-red:hover {
+	background-color: #d73833;
+}
+/* Modal 창  끝*/

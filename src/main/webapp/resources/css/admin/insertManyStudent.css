@@ -1,0 +1,94 @@
+@charset "UTF-8";
+.title-container {
+	position: relative;
+}
+
+.title-container h1 {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+	margin-bottom: 10px;
+}
+
+.highlight {
+	width: 250px;
+}
+
+#upload-msg{
+	margin-bottom: 20px;
+}
+input[type="file"]{
+	border: none;
+	padding: 2px;
+	margin-bottom: 20px;
+	height: 30px;
+}
+
+#excel-submit-btn{
+	width: 100px;
+ 	margin-right: 10px;
+}
+
+.block:last-child form{
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+ /* 테이블 관련 */
+ table{
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      border-collapse: collapse;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+ }
+ th{
+ 	background-color: #e8edf9;
+ }
+ td,th{
+ 	border: 1px solid #ccc;
+ 	padding: 8px;
+ 	 }
+ 	 
+/* 테이블의 스타일 */
+.table-container {
+    max-height: 580px;  /* 최대 높이 지정 */
+    min-height: 580px;  /* 최소 높이 지정 */
+    overflow-y: auto;   /* 세로 스크롤 활성화 */
+}
+
+.empty-tr{
+	height: 500px;
+}
+
+.empty-td{
+	text-align: center; 
+	vertical-align: middle; 
+	color: grey;
+	font-style: italic;
+}
+
+
+/* 강의 목록 */
+.block {
+	margin-top: 20px;
+	margin-bottom: 32px;
+	background: #f0f0f0;
+	padding: 24px; /* 1.5rem → 24px */
+	border-radius: 12px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.list-title{
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+#student-list-btn, .btn-blue{
+	width: 100px;
+	font-family: inherit;
+}
+

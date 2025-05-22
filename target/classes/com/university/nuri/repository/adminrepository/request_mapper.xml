@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="request">
+	<select id="getRequestList" resultType="map">
+		SELECT
+		r.req_idx,
+		r.req_type,
+		r.req_date,
+		r.req_response,
+		r.req_response_date,
+		r.req_reason,
+		r.req_active,
+		r.s_idx,
+		r.admin_idx,
+
+		us.user_id AS
+		student_user_id,
+		us.name AS student_name,
+		ua.name AS admin_name
+
+
+		FROM
+		request r
+		LEFT JOIN student s ON r.s_idx = s.s_idx
+		LEFT JOIN user us ON
+		s.user_idx = us.user_idx
+		LEFT JOIN admin a ON r.admin_idx = a.admin_idx
+		LEFT JOIN user ua ON a.user_idx = ua.user_idx
+
+		WHERE r.req_active = 0
+		ORDER BY r.req_idx DESC
+	</select>
+	<!-- 상세 조회 -->
+	<select id="getRequestDetail" parameterType="Integer"
+		resultType="map">
+		SELECT
+		r.req_idx,
+		r.req_type,
+		r.req_date,
+		r.req_response,
+		r.req_response_date,
+		r.req_reason,
+		r.req_active,
+		r.s_idx,
+		r.admin_idx,
+
+		us.user_idx AS user_idx,
+		us.user_id AS user_id,
+		-- 학생 학번
+		us.name AS
+		student_name, -- 학생 이름
+		ua.name AS admin_name -- 관리자 이름
+
+		FROM request r
+		LEFT JOIN student s ON r.s_idx = s.s_idx
+		LEFT JOIN user us ON
+		s.user_idx = us.user_idx
+		LEFT JOIN admin a ON r.admin_idx = a.admin_idx
+		LEFT JOIN user ua ON a.user_idx = ua.user_idx
+		WHERE r.req_idx =
+		#{req_idx} AND r.req_active = 0
+	</select>
+
+	<select id="getRequestFileList" parameterType="Integer"
+		resultType="com.university.nuri.vo.commonvo.RequestFileVO">
+		SELECT * FROM request_file WHERE req_idx = #{req_idx}
+	</select>
+
+	<update id="updateApproval" parameterType="map">
+		UPDATE request
+		SET
+		admin_idx = #{admin_idx},
+		req_response = #{req_response},
+		req_response_date = NOW()
+		WHERE req_idx = #{req_idx}
+	</update>
+
+	<update id="updateStatus" parameterType="map">
+		UPDATE user
+		SET status = #{status}
+		WHERE user_idx = #{user_idx}
+	</update>
+
+</mapper>

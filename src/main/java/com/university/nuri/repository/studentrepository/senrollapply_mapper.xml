@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="senrollapply">
+<!-- 수강신청 리스트 상단 -->
+<select id="searchLectureList" parameterType="map" resultType="map">
+SELECT 
+    l.lect_idx,
+    l.lect_name,
+    l.lect_id,
+    u.name AS professor_name,
+    l.lect_day,
+    CONCAT(TIME_FORMAT(l.lect_start_time, '%H:%i'), ' ~ ', TIME_FORMAT(l.lect_end_time, '%H:%i')) AS lect_time,
+    l.lect_max,
+    (
+        SELECT COUNT(*) 
+        FROM enroll e 
+        WHERE e.lect_idx = l.lect_idx
+    ) AS enrolled_count,
+    (l.lect_max - (
+        SELECT COUNT(*) 
+        FROM enroll e 
+        WHERE e.lect_idx = l.lect_idx
+    )) AS remain_count,
+    c.class_room,
+    c.class_building,
+    l.lect_credit
+FROM lecture l
+JOIN teacher t ON l.t_idx = t.t_idx
+JOIN user u ON t.user_idx = u.user_idx
+JOIN class c ON l.class_idx = c.class_idx
+WHERE 1=1
+  AND l.lect_active = 0
+<![CDATA[
+  AND l.lect_start_date <= NOW()
+  AND l.lect_end_date >= NOW()
+]]>
+
+<!-- ✅ 신청한 강의 제외 (enroll_status = 0인 경우) -->
+AND NOT EXISTS (
+  SELECT 1
+  FROM enroll e
+  WHERE e.lect_idx = l.lect_idx
+    AND e.s_idx = #{s_idx}
+    AND e.enroll_status = 0
+)
+
+<!-- 🔍 필터 조건 -->
+<if test="lect_name != null and lect_name != ''">
+  AND l.lect_name LIKE CONCAT('%', #{lect_name}, '%')
+</if>
+<if test="professor_name != null and professor_name != ''">
+  AND u.name LIKE CONCAT('%', #{professor_name}, '%')
+</if>
+<if test="lect_day != null and lect_day != ''">
+  AND l.lect_day = #{lect_day}
+</if>
+<if test="lect_id != null and lect_id != ''">
+  AND l.lect_id LIKE CONCAT('%', #{lect_id}, '%')
+</if>
+<if test="dept_name != null and dept_name != ''">
+  AND l.dept_id LIKE CONCAT('%', #{dept_name}, '%')
+</if>
+
+ORDER BY l.lect_day, l.lect_start_time
+</select>
+<!-- 수강신청 가능학점 조회 -->
+<select id="getMaxCredit" parameterType="string" resultType="int">
+  SELECT s_maxcredit FROM student WHERE s_idx = #{s_idx}
+</select>
+
+
+
+<!-- start,end 조회 (1회용) -->
+<select id="getCurrentEnrollPeriod" resultType="com.university.nuri.vo.commonvo.EnrollApplyVO">
+  <![CDATA[
+    SELECT *
+    FROM enroll_apply
+    WHERE start_time <= NOW()
+      AND end_time >= NOW()
+  ]]>
+</select>
+
+<!-- 신청 OK -->
+<insert id="insertEnroll" parameterType="map" useGeneratedKeys="true" keyProperty="enroll_idx">
+  INSERT INTO enroll (
+    lect_idx,
+    s_idx,
+    enroll_status,
+    enroll_time
+  ) VALUES (
+    #{lect_idx},
+    #{s_idx},
+    0,        
+    NOW()     
+  )
+</insert>
+<!-- 수강 신청 리스트 하단 -->
+<select id="getEnrolledLectureList" parameterType="string" resultType="map">
+  SELECT 
+    l.lect_idx,
+    l.lect_name,
+    l.lect_id,
+    u.name AS professor_name,
+    l.lect_day,
+    CONCAT(TIME_FORMAT(l.lect_start_time, '%H:%i'), ' ~ ', TIME_FORMAT(l.lect_end_time, '%H:%i')) AS lect_time,
+    l.lect_max,
+    (
+      SELECT COUNT(*) FROM enroll e2 WHERE e2.lect_idx = l.lect_idx
+    ) AS enrolled_count,
+    (l.lect_max - (
+      SELECT COUNT(*) FROM enroll e2 WHERE e2.lect_idx = l.lect_idx
+    )) AS remain_count,
+    c.class_room,
+    c.class_building,
+    l.lect_credit
+  FROM enroll e
+  JOIN lecture l ON e.lect_idx = l.lect_idx
+  JOIN teacher t ON l.t_idx = t.t_idx
+  JOIN user u ON t.user_idx = u.user_idx
+  JOIN class c ON l.class_idx = c.class_idx
+  WHERE e.s_idx = #{s_idx}
+    AND e.enroll_status = 0
+  ORDER BY l.lect_day, l.lect_start_time
+</select>
+<!-- 수강 취소 -->
+<update id="cancelEnroll" parameterType="map">
+  UPDATE enroll
+  SET enroll_status = 2
+  WHERE s_idx = #{s_idx}
+    AND lect_idx = #{lect_idx}
+    AND enroll_status = 0
+</update>
+<!-- 수강신청 상태 조회 -->
+<select id="getEnrollStatus" resultType="int" parameterType="map">
+  SELECT enroll_status
+  FROM enroll
+  WHERE s_idx = #{s_idx}
+    AND lect_idx = #{lect_idx}
+</select>
+<!-- 수강 신청 후 재신청 -->
+<update id="ReApplyEnroll" parameterType="map">
+  UPDATE enroll
+  SET enroll_status = 0,
+      enroll_time = NOW()
+  WHERE s_idx = #{s_idx}
+    AND lect_idx = #{lect_idx}
+</update>
+
+</mapper>

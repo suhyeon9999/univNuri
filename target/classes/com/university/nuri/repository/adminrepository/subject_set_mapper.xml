@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="subject_set">
+	<!-- 과목군 리스트 불러오기 -->
+	<select id="getAllSubjectSetList" resultType="map">
+		SELECT
+	    sub.sub_set_num,
+	    sub.sub_set_name,
+	    GROUP_CONCAT(s.subject_name ORDER BY s.subject_name SEPARATOR ', ') AS subjects,
+	    d.dept_name
+		FROM subject_set sub
+		LEFT JOIN subject s ON sub.subject_idx = s.subject_idx
+		LEFT JOIN department d ON sub.dept_idx = d.dept_idx 
+		WHERE sub.sub_set_active = 0
+		GROUP BY sub.sub_set_num, sub.sub_set_name, d.dept_name  
+		ORDER BY sub.sub_set_num;
+	</select>
+	<!-- 과목군 조건검색 -->
+	<!-- 학과이름검색 -->
+	<select id="searchDeptName" parameterType="String" resultType="map">
+		SELECT
+	    sub.sub_set_num,
+	    sub.sub_set_name,
+	    GROUP_CONCAT(s.subject_name ORDER BY s.subject_name SEPARATOR ', ') AS subjects,
+	    d.dept_name
+		FROM subject_set sub
+		LEFT JOIN subject s ON sub.subject_idx = s.subject_idx 
+		LEFT JOIN department d ON sub.dept_idx = d.dept_idx 
+		where d.dept_name like CONCAT('%', #{value}, '%') and 	sub.sub_set_active = 0 
+		GROUP BY sub.sub_set_num, sub.sub_set_name, d.dept_name  
+		ORDER BY sub.sub_set_num 
+	</select>
+	<!-- 과목군이름검색 -->
+	<select id="searchSubjectName" parameterType="String"
+		resultType="map">
+		SELECT
+	    sub.sub_set_num,
+	    sub.sub_set_name,
+	    GROUP_CONCAT(s.subject_name ORDER BY s.subject_name SEPARATOR ', ') AS subjects,
+	    d.dept_name
+		FROM subject_set sub
+		LEFT JOIN subject s ON
+		sub.subject_idx = s.subject_idx
+		LEFT JOIN department d ON sub.dept_idx
+		= d.dept_idx
+		where sub.sub_set_name like CONCAT('%', #{value}, '%') and
+		sub.sub_set_active = 0
+		GROUP BY sub.sub_set_num, sub.sub_set_name, d.dept_name  
+		ORDER BY sub.sub_set_num
+	</select>
+	<!-- 과목군 세트번호 확인 -->
+	<select id="getNextSubSetNum" resultType="String">
+		select
+		(IFNULL(max(sub_set_num), 0) + 1) from subject_set
+	</select>
+	<!-- 과목군명 중복검사 -->
+	<select id="chkSubSetName" parameterType="String"
+		resultType="int">
+		SELECT COUNT(*) FROM subject_set
+		WHERE sub_set_name = #{sub_set_name}
+		AND sub_set_active = 0 AND sub_set_num != #{excludeSubSetNum}
+	</select>
+	<!-- 과목군 등록 -->
+	<insert id="insertSubjectSet" parameterType="List">
+		INSERT INTO subject_set (
+		sub_set_num,
+		sub_set_name,
+		dept_idx,
+		subject_idx
+		)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.sub_set_num},
+			#{item.sub_set_name},
+			#{item.dept_idx},
+			#{item.subject_idx}
+			)
+		</foreach>
+	</insert>
+	<!-- 과목군 상세보기 -->
+	<select id="detailSubjectSet" parameterType="int"
+		resultType="map">
+		SELECT
+		sub.sub_set_num,
+		sub.sub_set_name,
+		GROUP_CONCAT(s.subject_name ORDER BY s.subject_name SEPARATOR ', ') AS subjects,
+		GROUP_CONCAT(s.subject_idx ORDER BY s.subject_name SEPARATOR ',') AS
+		subject_idx,
+		d.dept_name,
+		sub.dept_idx
+		FROM subject_set sub
+		LEFT JOIN subject s ON FIND_IN_SET(s.subject_idx, sub.subject_idx)
+		LEFT JOIN department d ON sub.dept_idx = d.dept_idx
+		WHERE sub.sub_set_num = #{sub_set_num}
+		GROUP BY sub.sub_set_num, sub.sub_set_name, d.dept_name, sub.dept_idx
+	</select>
+	<!-- 과목군 수정 active  -->
+	<update id="updateSubjectSet" parameterType="int">
+		UPDATE subject_set
+		SET sub_set_active = 1
+		WHERE sub_set_num = #{subSetNumInt};
+	</update>
+	
+	
+</mapper>
+  

@@ -1,0 +1,170 @@
+@charset "UTF-8";
+.title-container {
+	position: relative;
+}
+
+.nav-container {
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.nav-left, .nav-right {
+	display: flex;
+}
+
+.nav-left div, .nav-right div {
+	width: 110px;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	border-radius: 8px 8px 0 0;
+	margin-right: 2px;
+}
+
+.list {
+	background-color: #fdecb2;
+}
+
+.attend {
+	background-color: #e7f2d8;
+}
+
+.assign {
+	background-color: #b9e5fc;
+}
+
+.detail {
+	background-color: #d9c5ec;
+}
+
+.nav-container .nav-left .attend a {
+	text-decoration: none;
+	color: gray;
+		color: black;
+	font-weight: bold;
+}
+.nav-container .nav-left .list a {
+	text-decoration: none;
+	color: gray;
+}
+
+.nav-container .nav-right .detail a {
+	text-decoration: none;
+	color: gray;
+}
+
+.highlight {
+	position: relative;
+	top: 45px;
+	width: 200px;
+	height: 13px;
+	z-index: 0;
+	background-color: cornflowerblue;
+}
+
+.title-container h1 {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+}
+
+.main-container {
+	background-color: #f2f2f2;
+	padding: 30px;
+}
+
+.main-container {
+	background-color: #f2f2f2;
+	padding: 10px 20px 20px 20px;
+}
+form{
+		width: 100%;
+		float: right;
+		display: inline-block;
+	}
+  .selector{
+  	display: flex;
+  	flex-direction: row;
+  	 width: 100%;
+  	 align-content: space-between;
+  	 height: auto;
+  }
+  .selector li label{
+   align-content: center;
+  	height: auto;
+  	margin-right: 20px;
+  	margin-bottom: 30px;
+  	float: left;
+  }
+   .selector li:not(:last-child){
+  	margin-right: 80px;
+  	 align-content: center;
+  	  text-align: center;
+
+  }
+   .selector li:last-child{
+ 	text-align: right;
+ 	width: auto;
+   }
+   
+  table{
+ 	  margin-top: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      border-collapse: collapse;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 50px;
+ }
+ th{
+ 	background-color: #e8edf9;
+ }
+ td,th{
+ 	border: 1px solid #ccc;
+ 	padding: 8px;
+ 	 }
+ 	 td{
+ 	 	background-color: white;
+ 	 }
+ 	 
+.info-bar {
+  display: flex;
+  display: inline-flex;
+  gap: 16px;
+  flex-direction: row;
+  font-family: sans-serif;
+  font-size: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.info-item:not(:last-child){
+  display: flex;
+  gap: 4px;
+  margin-right: 10px; 
+}
+
+.label {
+  font-weight: bold;
+  color: #333;
+}
+
+.value {
+  color: orange;
+}
+
+/* 주말 날짜 (토, 일) 빨간색 */
+.flatpickr-day.weekend {
+  color: red !important;
+}
+
+/* 오늘 날짜 파란색 */
+.flatpickr-day.today-highlight {
+  background: #0066ff !important;
+  color: white !important;
+  border-radius: 50%;
+}
+ 	 

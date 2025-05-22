@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="exam">
+	<select id="examdetail" parameterType="String" resultType="map">
+		select u.name, l.lect_name, tm.test_subject, tm.mid_final,
+		tm.test_date, tm.teststart_time, tm.testend_time, f.f_name, tm.test_make_idx
+		from
+		test_make tm
+		join
+		lecture l on tm.lect_idx = l.lect_idx
+		join teacher t on
+		l.t_idx=t.t_idx
+		join user u on u.user_idx = t.user_idx
+		JOIN file f ON
+		f.f_idx=tm.f_idx
+		where test_make_idx = #{test_make_idx}
+
+	</select>
+	<select id="examupdate"
+		parameterType="com.university.nuri.vo.teachervo.TestMakeVO">
+		update test_make
+		set test_subject=#{test_subject},
+		mid_final = #{mid_final}, test_date=#{test_date},
+		teststart_time=#{teststart_time}, testend_time=#{testend_time}
+		where
+		test_make_idx=#{test_make_idx}
+	</select>
+	<select id="getTLecName" parameterType="String" resultType="map">
+		select l.lect_name, u.name
+		from lecture l
+		join teacher t on
+		t.t_idx=l.t_idx
+		join user u on u.user_idx=t.user_idx
+		where
+		lect_idx=#{lect_idx}
+	</select>
+	<insert id="examMakeOK"
+		parameterType="com.university.nuri.vo.teachervo.TestMakeVO" useGeneratedKeys="true" keyProperty="test_make_idx">
+		INSERT INTO test_make (lect_idx, test_subject,
+		mid_final, test_date,
+		teststart_time, testend_time)
+		VALUES (#{lect_idx},
+		#{test_subject}, #{mid_final}, #{test_date},
+		#{teststart_time},
+		#{testend_time})
+	</insert>
+	<update id="examDelete" parameterType="String">
+		update test_make
+		set active
+		=1
+		where test_make_idx =#{test_make_idx}
+	</update>
+	<select id="getPwd" parameterType="String" resultType="String">
+		SELECT user_pw
+		FROM teacher t
+		JOIN user u ON t.user_idx
+		= u.user_idx
+		WHERE t_idx=#{t_idx}
+	</select>
+	<insert id="insertFile"
+		parameterType="com.university.nuri.vo.commonvo.FileVO"
+		useGeneratedKeys="true" keyProperty="f_idx">
+		insert into file (f_name, f_size,
+		f_type, f_date, f_old_name)
+		values (#{f_name}, #{f_size}, #{f_type},
+		now(), #{f_old_name})
+	</insert>
+	<update id="updateFileToTestMake" parameterType="map">
+		update test_make
+		set f_idx=#{f_idx}
+		where test_make_idx = #{test_make_idx}
+	</update>
+	<update id="updateFile" parameterType="map">
+		update file
+		set f_name = #{fileVO.f_name}, f_size = #{fileVO.f_size}, f_date = now(),
+		f_old_name = #{fileVO.f_old_name}
+		where f_idx = (select f_idx from test_make where test_make_idx =
+		#{test_make_idx})
+	</update>
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aenrollfix">
+
+
+<update id="getEnrollStatusOneUpdate">
+
+UPDATE enroll
+SET enroll_status = 1
+WHERE enroll_status = 0;
+
+</update>
+
+
+
+
+<select id="getEnrollApplyYear" parameterType="String" resultType="java.sql.Timestamp">
+
+SELECT start_time FROM enroll_apply
+where enroll_apply_idx = #{enroll_apply_idx}
+
+
+</select>
+
+<select id="getEnrollStatusFIxList" parameterType="java.sql.Timestamp" resultType="String">
+    SELECT enroll_idx
+    FROM enroll
+    WHERE enroll_status = 1
+    AND enroll_time &gt; #{start_time}
+
+</select>
+
+<select id="getLectIdx" resultType="int" parameterType="String">
+SELECT lect_idx
+FROM enroll
+WHERE enroll_idx = #{param};
+
+
+
+</select>
+
+<insert id="insertScoreByEnrollIdx" parameterType="String">
+
+INSERT INTO score (enroll_idx)
+VALUES (#{enroll_idx});
+
+
+</insert>
+
+
+
+<insert id="insertAttendanceByEnrollIdx" parameterType="map">
+
+INSERT INTO attendance (enroll_idx, attend_date, attend_status)
+VALUES (#{enroll_idx}, #{attend_date}, 0);
+
+
+
+</insert>
+
+  		
+</mapper>

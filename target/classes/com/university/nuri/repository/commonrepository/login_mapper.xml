@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+	<select id="loginchk" parameterType="String" resultType="com.university.nuri.vo.commonvo.UserVO">
+		select * from user where user_id=#{user_id} 	
+	</select>
+	
+		<!-- 1. 학생용 -->
+		<select id="getStudentByUserIdx" parameterType="String" resultType="Map">
+		    SELECT s_idx FROM student WHERE user_idx = #{user_idx}
+		</select>
+		
+		<!-- 2. 선생용 -->
+		<select id="getTeacherByUserIdx" parameterType="String" resultType="Map">
+		    SELECT t_idx FROM teacher WHERE user_idx = #{user_idx}
+		</select>
+		
+		<!-- 3. 관리자용 -->
+		<select id="getAdminByUserIdx" parameterType="String" resultType="Map">
+		    SELECT admin_idx, a_grade FROM admin WHERE user_idx = #{user_idx}
+		</select>
+</mapper>

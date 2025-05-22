@@ -1,0 +1,100 @@
+@charset "UTF-8";
+
+.total-container {
+	margin: 20px;
+	max-width: 900px;
+}
+
+.title-container {
+	position: relative;
+}
+
+.highlight {
+	position: relative;
+	top: 45px;
+	width: 200px;
+	height: 13px;
+	z-index: 0;
+	background-color: cornflowerblue;
+}
+
+.title-container h1 {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+}
+
+.nav-container {
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.nav-left, .nav-right {
+	display: flex;
+}
+
+.nav-left div, .nav-right div {
+	width: 110px;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	border-radius: 8px 8px 0 0;
+	margin-right: 2px;
+}
+
+.list {
+	background-color: #fdecb2;
+}
+
+.attend {
+	background-color: #e7f2d8;
+}
+
+.assign {
+	background-color: #b9e5fc;
+}
+
+.detail {
+	background-color: #d9c5ec;
+}
+
+.nav-container .nav-left .attend a {
+	text-decoration: none;
+	color: gray;
+	
+}
+.nav-container .nav-left .list a {
+	text-decoration: none;
+	color: gray;
+}
+
+.nav-container .nav-right .detail a {
+	text-decoration: none;
+	color: gray;
+	color: black;
+	font-weight: bold;
+}
+
+.main-container {
+	background-color: #f2f2f2;
+	padding: 30px;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	background-color: white;
+}
+
+th {
+	background-color: #e2e2f8;
+}
+
+th, td {
+	border: 1px solid black;
+	padding: 12px;
+	text-align: left;
+	text-align: center;
+}

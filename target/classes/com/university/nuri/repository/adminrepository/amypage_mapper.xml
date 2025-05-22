@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="amypage">
+	<select id="getMyPage" parameterType="Integer" resultType="map">
+		SELECT
+		u.user_id AS user_id,
+		u.status AS status,
+		u.name AS name,
+		u.phone
+		AS phone,
+		u.email AS email,
+		u.birth AS birth,
+		u.user_pw AS user_pw,
+		ad.a_grade AS a_grade,
+		f.f_name AS f_name,
+		f.f_old_name AS f_old_name
+		FROM admin ad
+		JOIN user u ON ad.user_idx = u.user_idx
+		LEFT JOIN file f ON u.f_idx = f.f_idx
+		WHERE ad.admin_idx = #{admin_idx}
+	</select>
+	
+	<update id="updateApassword" parameterType="Map">
+		UPDATE user u
+		JOIN
+		admin ad ON u.user_idx = ad.user_idx
+		SET u.user_pw = #{newPassword}
+		WHERE ad.admin_idx = #{admin_idx}
+	</update>
+	
+		<update id="getMyPageUpdateOK" parameterType="Map">
+		UPDATE user u
+		JOIN admin ad ON u.user_idx = ad.user_idx
+		SET
+		u.phone = #{phone},        <!-- user 테이블의 phone -->
+		u.email = #{email},        <!-- user 테이블의 email -->
+		u.birth = #{birth}       
+		WHERE ad.admin_idx = #{admin_idx}     <!-- student 테이블의 s_idx 값으로 조건 -->
+	</update>
+
+
+	<!-- 파일 관리 -->
+	<insert id="insertFileFirst" parameterType="map"
+		useGeneratedKeys="true" keyProperty="f_idx">
+		INSERT INTO file (f_name, f_size, f_date, f_type)
+		VALUES (#{f_name}, #{f_size}, NOW(), #{f_type})
+	</insert>
+
+	<update id="updateUserFileIdx" parameterType="map">
+		UPDATE user
+		SET f_idx = #{f_idx}
+		WHERE user_idx = #{user_idx}
+	</update>
+
+	<update id="updateFname" parameterType="map">
+		UPDATE file
+		SET f_name = #{f_name}, f_size = #{f_size}, f_type = #{f_type}
+		WHERE f_idx = #{f_idx}
+	</update>
+
+	<update id="insertFoldName" parameterType="map">
+		UPDATE file
+		SET f_old_name = #{f_old_name}
+		WHERE f_idx = #{f_idx}
+	</update>
+
+	<update id="updateFnameFoldName" parameterType="map">
+		UPDATE file
+		SET f_name = #{f_name}, f_size = #{f_size}, f_type = #{f_type},
+		f_old_name = #{f_old_name}
+		WHERE f_idx = #{f_idx}
+	</update>
+	
+	<select id="checkApassword" parameterType="Integer"
+		resultType="String">
+		SELECT u.user_pw
+		FROM admin ad
+		JOIN user u ON ad.user_idx =
+		u.user_idx
+		WHERE ad.admin_idx = #{admin_idx}
+	</select>
+</mapper>

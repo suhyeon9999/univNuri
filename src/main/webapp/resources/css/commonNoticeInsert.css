@@ -1,0 +1,72 @@
+/* 기존 박스형 스타일 제거 */
+textarea {
+	all: unset; /* 기본 스타일 완전히 제거 */
+	box-sizing: border-box;
+	width: 100%;
+	height: 500px;
+}
+
+/* 제목 입력 라인 스타일 */
+input.line-input {
+    all: unset;
+    font-size: 24px;
+    font-weight: 600;    
+    padding: 12px 5px;
+    flex: 1; /* 입력란이 남은 공간을 채우도록 */
+    background: transparent;
+    box-sizing: border-box;
+    width: 84%;
+    }
+
+/* 내용 입력 라인 스타일 */
+.line-textarea {
+	all: unset; /* 모든 기본 스타일 제거 */
+	width: 100%;
+	border-bottom: 2px solid #ccc;
+	font-size: 20px;
+	padding: 10px 5px;
+	background: transparent;
+	resize: none; /* 크기 조절 핸들 제거 */
+	box-sizing: border-box;
+	min-height: 150px;
+	height: 500px;
+}
+
+.buttons {
+	display: flex;
+	justify-content: flex-end;
+	margin: 20px;
+}
+
+.btn-gray {
+	margin: 5px;
+	width: 70px;
+	font-size: 12px;
+}
+
+select[name="necessary"] {
+	font-size: 10px;
+    margin-bottom: 5px;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    background: transparent;
+    width: 150px;
+    height: 32px;
+}
+
+.title-group {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end; /* 오른쪽 공간 최적화 */
+}
+
+.form-group{
+	display: flex;
+}
+
+.meta {
+	color: gray;
+	font-size: 14px;
+	margin: 0px;
+	text-align: right;
+}

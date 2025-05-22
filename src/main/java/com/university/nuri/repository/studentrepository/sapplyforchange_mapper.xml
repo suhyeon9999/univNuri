@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sapplyforchange">
+
+	<!-- 기본 조회 -->
+	<select id="getApplyList" parameterType="Integer"
+		resultType="map">
+		SELECT req_idx, req_date, req_type, req_response,
+		req_response_date
+		FROM request
+		WHERE s_idx = #{s_idx} AND req_active = 0
+		ORDER BY req_idx DESC
+	</select>
+
+	<select id="filteredSApplyList" parameterType="map"
+		resultType="map">
+		SELECT req_idx, req_date, req_type, req_response, req_response_date
+		FROM request
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			s_idx = #{s_idx}
+			AND req_active = 0
+			<if test="req_type != null">
+				AND req_type = #{req_type}
+			</if>
+			<if test="req_response != null">
+				AND req_response = #{req_response}
+			</if>
+		</trim>
+		ORDER BY req_idx ASC
+	</select>
+
+	<!-- 요청 등록 -->
+	<insert id="insertRequestTable"
+		parameterType="com.university.nuri.vo.commonvo.RequestVO"
+		useGeneratedKeys="true" keyProperty="req_idx">
+		INSERT INTO request (s_idx,
+		req_type, req_reason)
+		VALUES (CAST(#{s_idx} AS SIGNED),
+		CAST(#{req_type} AS SIGNED), #{req_reason})
+	</insert>
+
+	<!-- 이전 방식: insertRequestFileTable (더 이상 사용 안함) -->
+	<insert id="insertRequestFileTable"
+		parameterType="com.university.nuri.vo.commonvo.RequestFileVO">
+		INSERT INTO request_file (
+		req_idx,
+		req_f_name,
+		req_f_order,
+		req_f_size,
+		req_f_type
+		) VALUES (
+		#{req_idx},
+		#{req_f_name},
+		#{req_f_order},
+		#{req_f_size},
+		#{req_f_type}
+		)
+	</insert>
+
+	<!-- 상세 조회 -->
+	<select id="getRequestDetail" parameterType="Integer"
+		resultType="com.university.nuri.vo.commonvo.RequestVO">
+		SELECT * FROM request WHERE req_idx = #{req_idx} AND
+		req_active = 0
+	</select>
+
+	<select id="getRequestFileList" parameterType="Integer"
+		resultType="com.university.nuri.vo.commonvo.RequestFileVO">
+		SELECT * FROM request_file WHERE req_idx = #{req_idx}
+	</select>
+
+	<!-- 수정 로직 -->
+	<update id="updateRequest"
+		parameterType="com.university.nuri.vo.commonvo.RequestVO">
+		UPDATE request
+		SET req_type = #{req_type}, req_reason =
+		#{req_reason}
+		WHERE req_idx = #{req_idx}
+	</update>
+
+	<insert id="insertNewFile"
+		parameterType="com.university.nuri.vo.commonvo.RequestFileVO">
+		INSERT INTO request_file (
+		req_idx, req_f_name,
+		req_f_size, req_f_type, req_f_order
+		) VALUES (
+		#{req_idx},
+		#{req_f_name}, #{req_f_size}, #{req_f_type}, #{req_f_order}
+		)
+	</insert>
+
+	<delete id="deleteRequestFilesByReqIdx" parameterType="string">
+		DELETE
+		FROM request_file WHERE req_idx = #{req_idx}
+	</delete>
+
+	<!-- request_file 먼저 삭제 -->
+	<delete id="requestFileDeleteOk" parameterType="int">
+		DELETE FROM
+		request_file
+		WHERE req_idx = #{req_idx}
+	</delete>
+
+	<!-- request 삭제 -->
+	<update id="requestDeleteOk" parameterType="int">
+		UPDATE request
+		SET
+		req_active = 1
+		WHERE req_idx = #{req_idx}
+	</update>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper  namespace="subject">
+  <!-- 과목리스트 불러오기 -->
+  	<select id="getAllSubjectList" resultType="map">
+  		select s.* , d.dept_name 
+  		from subject s
+  		left join department d on s.dept_idx = d.dept_idx 
+  		where s.subject_active = 0  		 		  		
+  	</select>
+	<!-- 과목등록 -->
+	<insert id="insertSubject" parameterType="com.university.nuri.vo.adminvo.SubjectVO" useGeneratedKeys="true" keyProperty="subject_idx">
+  		insert into subject(dept_idx, subject_name ) 
+  		 values(#{dept_idx}, #{subject_name})
+  	</insert>
+  <!-- 과목리스트 불러오기 -->
+  	<select id="detailSubject" resultType="map" parameterType="String">
+  		select s.* , d.dept_name  
+  		from subject s
+  		left join department d on s.dept_idx = d.dept_idx 
+  		where s.subject_idx=#{subject_idx}
+  	</select>
+  	<!-- 과목 삭제 -->
+	<update id="deleteSubject" parameterType="String">
+		update subject set subject_active = 1 
+		where subject_idx =#{subject_idx}
+	</update>
+	<!-- 과목 조건검색 -->
+	<!-- 학과이름검색-->
+	<select id="searchDeptName" parameterType="String" resultType="map">
+  		select s.* , d.dept_name 
+  		from subject s
+  		left join department d on s.dept_idx = d.dept_idx 
+  		where d.dept_name like CONCAT('%', #{value}, '%') and s.subject_active = 0  		 		  		
+  	</select>
+	<!-- 과목이름검색 -->
+	<select id="searchSubjectName" parameterType="String" resultType="map">
+  		select s.* , d.dept_name 
+  		from subject s
+  		left join department d on s.dept_idx = d.dept_idx 
+  		where s.subject_name like CONCAT('%', #{value}, '%') and s.subject_active = 0  		 		  		
+  	</select>
+  </mapper>
+  

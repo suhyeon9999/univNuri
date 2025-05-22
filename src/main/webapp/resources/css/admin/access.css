@@ -1,0 +1,75 @@
+@charset "UTF-8";
+ /* 테이블 관련 */
+ table{
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      border-collapse: collapse;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 50px;
+ }
+ th{
+ 	background-color: #e8edf9;
+ }
+ td,th{
+   vertical-align: middle;
+  text-align: center;
+ 	border: 1px solid #ccc;
+ 	padding: 8px;
+    height: 60px;       /* 각 행 높이 동일하게 강제 */
+ 	 }
+ th:first-child, td:first-child {
+  width: 15%;
+  }
+  .insert table, .select table, .update table, .delete table{
+   width: 100%;
+  table-layout: fixed;
+   height: 100%;  /* 여기 중요! */
+   
+ } 
+ .box-controll{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin: 0 auto;
+  width: 100%;
+ }
+ .insert, .select, .update, .delete {
+  height: 100%;       /* 높이 강제 가능 */
+  display: flex;
+  flex-direction: column;
+}
+
+ .insert input, .select input, .update input, .delete input{
+ 	width: 12px;
+ }
+ .insert, .select {
+  height: 245px;
+ } 
+.btn-blue{
+	margin-left: 10px;
+}
+.highlight, h1{
+	display: inline-block;
+	float: left;
+}
+.search-btn{
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 15px;
+}
+.search-btn select{
+	float: left;
+}
+.search-btn button{
+	float: right;
+	width: 90px;
+}
+.title-container{
+	width: 100%;
+}
+input[type="checkbox"] {
+  transform: scale(1.5);     /* 크기 확대 */
+  vertical-align: middle;    /* 세로선 맞춤 */
+}

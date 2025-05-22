@@ -1,0 +1,102 @@
+@charset "UTF-8";
+/* ========================= */
+/* 폰트 Import*/
+/* ========================= */
+/* 1. 로고*/
+@import url('https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap');
+/* 2. Body*/
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+/* ========================= */
+/* 전체 초기화 */
+/* ========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+a {
+	text-decoration: none;
+	color: white;
+	cursor: pointer;
+}
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+/* ========================= */
+/* HEADER(헤더) */
+/* ========================= */
+header {
+  background-color: #082567;
+  color: white;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 100px;
+  white-space: nowrap; /* 텍스트가 줄 바꿈 없이 한 줄로 유지 */
+}
+#logo {
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+}
+.user-info {
+  display: flex; 
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 50px; /* 요소 간 간격 설정 (20px 예시) */
+  font-weight: bold;
+}
+.user-info a {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+.user-info a:hover{
+	color: red;
+}
+
+/* ========================= */
+/* Aside(사이드바) */
+/* ========================= */
+aside {
+  width: 250px; /* 사이드바 너비 */
+  background-color: #e0e4eb; 
+  color: white; 
+  padding: 32px 16px; 
+  position: fixed; 
+  height: 100%; 
+  margin-top: 100px; /* 상단 여백 (헤더와 간격) */
+  top: 0; /* 고정 위치 상단 */
+  left: 0; /* 고정 위치 좌측 */
+  z-index: 1000; /* 다른 요소들보다 위에 오도록 설정 */
+}
+
+.navi-menu {
+  display: flex; 
+  flex-direction: column; /* 세로로 정렬 */
+  align-items: center; /* 중앙 정렬 */
+}
+
+.navi-menu li {
+  margin-bottom: 40px; /* 항목 사이 간격 (24px) */
+  list-style-type: none; /* 기본 리스트 스타일 제거 */
+  font-size: 18px;
+}
+
+.navi-menu li a {
+  color: #333; /* 텍스트 색 */
+  text-decoration: none; /* 링크 밑줄 제거 */
+  font-weight: 500; /* 글자 두께 */
+}
+
+.navi-menu li a:hover {
+  color: #082567; /* 호버 시 색상 변화 */
+  font-weight: bold; /* 호버 시 글자 두께 증가 */
+}

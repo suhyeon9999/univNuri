@@ -1,0 +1,108 @@
+@charset "UTF-8";
+
+<
+style>.total-container {
+	margin: 20px;
+	max-width: 900px !important; 
+}
+
+.title-container {
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.highlight {
+	position: relative;
+	top: 45px;
+	width: 200px;
+	height: 13px;
+	z-index: 0;
+	background-color: cornflowerblue;
+}
+
+.title-container h1 {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+}
+
+.main-container {
+	background-color: #f2f2f2;
+	padding: 10px 20px 20px 20px;
+}
+
+.main-top {
+	display: flex;
+	justify-content: space-between;
+}
+
+#assign-btn {
+	background-color: #3f3fa6;
+	color: white;
+	width: 80px;
+	height: 38px;
+	padding: 5px;
+	border-radius: 5px;
+	border: none;
+	font-size: 15px;
+	cursor: pointer;
+}
+
+.count {
+	margin: 0;
+}
+
+.count span {
+	color: orange;
+}
+
+.assign-list {
+	background-color: white;
+	border-radius: 5px;
+	display: flex;
+	justify-content: space-between;
+	padding: 20px;
+	align-items: center;
+}
+
+.assign-list div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.assign-list div p {
+	margin: 2px;
+}
+
+.submit {
+	color: blue;
+}
+
+.not-submit {
+	color: red;
+}
+
+.search-box {
+	display: flex;
+	justify-content: flex-start;
+	gap: 10px;
+	align-items: center;
+}
+
+.search-btn {
+	margin: 10px 0;
+	padding: 10px;
+	border: none;
+	background-color: orange;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+select {
+	padding: 8px;
+	margin-left: 5px;
+	height: 35px;
+	width: 180px;
+}

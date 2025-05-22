@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sscoresearch">
+
+  <!-- 성적 리스트 조회 -->
+  <select id="getSScoreSearch" parameterType="map" resultType="map">
+ SELECT 
+  l.lect_idx,
+  l.lect_name AS assign_title,
+  u.name AS professor_name,
+CASE 
+  WHEN c.class_building IN (1,2,3) THEN 
+    CONCAT(
+      CASE c.class_building
+        WHEN 1 THEN '청'
+        WHEN 2 THEN '예'
+        WHEN 3 THEN '기'
+      END,
+      c.class_room
+    )
+  ELSE '미지정'
+END AS classroom,
+  l.lect_day,
+  l.lect_start_time,
+  l.lect_end_time,
+  s.score_mid,
+  s.score_final,
+  s.score_assign,
+  s.score_attend,
+  s.score_total,
+  l.lect_start_date
+FROM enroll e
+JOIN lecture l ON e.lect_idx = l.lect_idx
+JOIN teacher t ON l.t_idx = t.t_idx
+JOIN user u ON t.user_idx = u.user_idx
+JOIN class c ON l.class_idx = c.class_idx
+LEFT JOIN score s ON e.enroll_idx = s.enroll_idx
+WHERE e.s_idx = #{s_idx} 
+
+
+
+  <if test="year != null and year != ''">
+    AND YEAR(l.lect_start_date) = #{year} 
+  </if>
+
+<if test="semester != null and semester != ''">
+  <choose>
+    <when test="semester == '1' or semester == 1">
+      AND MONTH(l.lect_start_date) BETWEEN 1 AND 6
+    </when>
+    <when test="semester == '2' or semester == 2">
+      AND MONTH(l.lect_start_date) BETWEEN 7 AND 12
+    </when>
+  </choose>
+</if>
+
+  <if test="lect_name != null and lect_name != ''">
+    AND l.lect_name LIKE CONCAT('%', #{lect_name}, '%') 
+  </if>
+</select>
+
+
+  <!-- 전체 GPA, 금학기 GPA -->
+<select id="getGPAInfo" parameterType="string" resultType="map">
+  SELECT 
+    ROUND(AVG(CASE WHEN s.score_total IS NOT NULL THEN s.score_total ELSE 0 END), 2) AS totalGPA,
+    ROUND(AVG(CASE 
+                WHEN s.score_total IS NOT NULL 
+                     AND YEAR(l.lect_start_date) = YEAR(NOW()) 
+                     AND (
+                          (MONTH(l.lect_start_date) BETWEEN 1 AND 6 AND MONTH(NOW()) BETWEEN 1 AND 6)
+                          OR
+                          (MONTH(l.lect_start_date) BETWEEN 7 AND 12 AND MONTH(NOW()) BETWEEN 7 AND 12)
+                     )
+                THEN s.score_total ELSE NULL 
+              END), 2) AS semesterGPA
+  FROM enroll e
+  JOIN lecture l ON e.lect_idx = l.lect_idx
+  LEFT JOIN score s ON e.enroll_idx = s.enroll_idx
+  WHERE e.s_idx = #{s_idx}
+</select>
+  <select id="getObjectionList" parameterType="String" resultType="map">
+SELECT 
+  o.objection_idx,
+  l.lect_name,
+  u.name AS professor_name,
+  o.objection_content,
+  o.apply_date,
+  o.handle_date,
+  o.approve_objection,
+  o.objection_active
+FROM objection o
+JOIN enroll e ON o.enroll_idx = e.enroll_idx
+JOIN lecture l ON e.lect_idx = l.lect_idx
+JOIN teacher t ON l.t_idx = t.t_idx
+JOIN user u ON t.user_idx = u.user_idx
+WHERE e.s_idx = #{s_idx}
+ORDER BY o.apply_date DESC
+  </select>
+<!-- 이의제기 수정 -->
+<update id="sScoreSearchObjectionDetailUpdateOK" parameterType="map">
+  UPDATE objection
+  SET objection_content = #{objection_content}
+  WHERE objection_idx = #{objection_idx}
+</update>
+<insert id="sScoreSearchObjectionDetailInsertOK" parameterType="map">
+  INSERT INTO objection (
+    enroll_idx,
+    objection_content,
+    apply_date,
+    handle_date,
+    approve_objection,
+    objection_active
+  ) VALUES (
+    #{enroll_idx},
+    #{objection_content},
+    NOW(),
+    NULL,
+    NULL,
+    #{objection_active}
+  )
+</insert>
+<!-- 이의 제기 디테일 -->
+<select id="getObjectionByIdx" parameterType="String" resultType="map">
+  SELECT o.*, l.lect_name, u.name AS professor_name
+  FROM objection o
+  JOIN enroll e ON o.enroll_idx = e.enroll_idx
+  JOIN lecture l ON e.lect_idx = l.lect_idx
+  JOIN teacher t ON l.t_idx = t.t_idx
+  JOIN user u ON t.user_idx = u.user_idx
+  WHERE o.objection_idx = #{objection_idx}
+</select>
+<!-- 이의제기 삭제 -->
+<update id="sScoreSearchObjectionDetailDeleteOK" parameterType="map">
+    UPDATE objection o
+    JOIN enroll e ON o.enroll_idx = e.enroll_idx
+    SET o.objection_active = 1
+    WHERE o.objection_idx = #{objection_idx}
+      AND e.s_idx = #{s_idx}
+      AND o.objection_active = 0
+</update>
+<!-- 전체 이의제기 조회 -->
+<select id="getAllObjectionList" parameterType="string" resultType="map">
+SELECT 
+  o.objection_idx,
+  l.lect_name,
+  u.name AS professor_name,
+  o.objection_content,
+  o.apply_date,
+  o.handle_date,
+  o.approve_objection,
+  o.objection_active
+FROM objection o
+JOIN enroll e ON o.enroll_idx = e.enroll_idx
+JOIN lecture l ON e.lect_idx = l.lect_idx
+JOIN teacher t ON l.t_idx = t.t_idx
+JOIN user u ON t.user_idx = u.user_idx
+WHERE e.s_idx = #{s_idx}
+ORDER BY o.apply_date DESC
+</select>
+</mapper>

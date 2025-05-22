@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="lecture2">
+
+<!-- 강의관리 메인화면 -->
+<!-- 	// 강의관리메인 금학기 정보 불러오기 -->
+<!--year, month값이 controller에서 전달이 안된다.. 고치기  -->
+<!-- 	// 강의관리메인 과거학기 정보 불러오기 -->
+<select id="mainSemesterLectureList"  parameterType="map" resultType="map">
+SELECT 
+    l.lect_idx, 
+    l.lect_name, 
+    l.lect_start_time, 
+    l.lect_end_time, 
+    l.lect_day, 
+    c.class_room, 
+    c.class_building, 
+    COUNT(e.s_idx) AS student_count
+FROM lecture AS l
+JOIN class AS c ON l.class_idx = c.class_idx
+JOIN enroll AS e ON l.lect_idx = e.lect_idx
+WHERE 
+    e.enroll_status = 1 
+    AND l.t_idx=#{t_idx}
+    AND l.lect_active = 0 
+<if test="currentPastIs == 'past'">
+    AND CURRENT_TIMESTAMP &gt; l.lect_end_date
+</if>
+<if test="currentPastIs == 'current'">
+    AND l.lect_start_date &lt;= CURRENT_TIMESTAMP 
+    AND CURRENT_TIMESTAMP &lt;= l.lect_end_date
+</if>  
+<if test="year != null and year != ''">
+AND YEAR(l.lect_start_date) = #{year}
+</if>
+<if test="month != null and month != ''">
+AND MONTH(l.lect_start_date) = #{month}
+</if>
+<if test="subject != null and subject != ''">
+AND l.lect_name LIKE CONCAT('%', #{subject}, '%')
+</if>
+GROUP BY 
+    l.lect_idx, 
+    l.lect_name, 
+    l.lect_start_time, 
+    l.lect_end_time, 
+    l.lect_day, 
+    c.class_room, 
+    c.class_building
+</select>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+
+<!-- 학생 목록 -->
+
+<!-- // 강의관리메인에서 강의 선택해서 해당 강의 수강하는 학생 리스트에서 학번or 이름 '검색' 조회-->
+
+
+<select id="studentListMap" parameterType="map" resultType="map">
+
+select * from lecture as l 
+join enroll as e on l.lect_idx = e.lect_idx
+join student as stu on stu.s_idx = e.s_idx
+join user as u on u.user_idx = stu.user_idx
+join department as d on d.dept_idx = stu.dept_idx
+<where>
+  e.enroll_status = 1
+  AND l.lect_active = 0
+  AND l.lect_idx = #{lect_idx}
+        <if test="name != null and name != ''">
+            AND u.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="user_id != null and user_id != ''">
+            AND u.user_id LIKE CONCAT('%', #{user_id}, '%')
+        </if>
+</where>
+
+
+
+</select> 
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+
+<!-- 출결 관리  -->
+
+<!-- // 해당 강의 듣는 전체 학생 수  -->
+<select id="studentNum" resultType="java.lang.Integer">
+select count(distinct e.s_idx) as student_count
+from lecture as l
+join enroll as e on l.lect_idx = e.lect_idx
+where e.enroll_status = 1
+  and l.lect_active = 0
+  and l.lect_idx = #{lect_idx}
+</select>
+
+
+<resultMap id="lectureInfoMap" type="map">  <!--///////////////이 부분 있어야 하는 지 확인-->
+
+    <result property="lect_start_date" column="lect_start_date" javaType="java.sql.Date"/>
+
+</resultMap>
+
+<!-- 	// 강의 정보 가져오기(강의 시작 날짜 LocalDate로 사용하기 위함, 강의 요일 사용하기 위함)  -->
+<select id="lectureInfo"  resultMap="lectureInfoMap">
+SELECT * FROM lecture
+WHERE lect_idx = #{lect_idx};
+</select>
+
+
+<!-- 	// 강의관리메인에서 강의 선택해서 수업하는 '모든' 날짜'중 (for문이므로 ) '특정 날짜의' 출결 관리 집계 현황 -->
+
+<select id="attendanceSummaryListByDateMap" parameterType="map" resultType="map">
+
+  SELECT 
+    a.attend_date,
+SUM(CASE WHEN a.attend_status = 0 THEN 1 ELSE 0 END) AS undecided,
+    SUM(CASE WHEN a.attend_status = 1 THEN 1 ELSE 0 END) AS present,
+    SUM(CASE WHEN a.attend_status = 2 THEN 1 ELSE 0 END) AS late,
+    SUM(CASE WHEN a.attend_status =3 THEN 1 ELSE 0 END) AS early_leave,
+	SUM(CASE WHEN a.attend_status = 4 THEN 1 ELSE 0 END) AS late_early_leave,
+    SUM(CASE WHEN a.attend_status = 5 THEN 1 ELSE 0 END) AS absent
+  FROM lecture l
+  JOIN enroll e ON l.lect_idx = e.lect_idx
+  JOIN attendance a ON e.enroll_idx = a.enroll_idx
+  WHERE l.lect_idx =#{lect_idx}
+     AND DATE(a.attend_date) = #{lectDate}  
+  and e.enroll_status = 1
+  and l.lect_active = 0
+  GROUP BY a.attend_date
+  ORDER BY a.attend_date
+</select> 
+
+
+
+
+<!-- // 강의관리에서 날짜 눌렀을때 해당 날짜 학생들의 출석 조회, 수정 정보 불러오기 or 출석 체크 클릭시 
+// 그날이 수업날이라면 나오는 정보 불러오기
+// 해당 날짜의 학생별 출결 상황 -->
+
+<!--  status 부분  해당 날짜 학생들의 출석, 지각, 결석 등 해당 정보 -->
+<select id="lectureAttendanceByDateStudentList" resultType="map">
+       SELECT
+	u.name, u.user_id, stu.s_grade, d.dept_name, e.enroll_idx,
+	SUM(CASE WHEN a.attend_status = 0 THEN 1 ELSE 0 END) AS undecided,
+    SUM(CASE WHEN a.attend_status = 1 THEN 1 ELSE 0 END) AS present,
+    SUM(CASE WHEN a.attend_status = 2 THEN 1 ELSE 0 END) AS late,
+    SUM(CASE WHEN a.attend_status =3 THEN 1 ELSE 0 END) AS early_leave,
+	SUM(CASE WHEN a.attend_status = 4 THEN 1 ELSE 0 END) AS late_early_leave,
+    SUM(CASE WHEN a.attend_status = 5 THEN 1 ELSE 0 END) AS absent,
+    (SELECT a2.attend_status 
+	 FROM attendance a2  
+	 WHERE a2.enroll_idx = e.enroll_idx AND a2.attend_date = #{date}
+	 LIMIT 1) AS attend_status
+    
+    
+	from lecture as l 
+	join enroll as e on l.lect_idx = e.lect_idx
+	join student as stu on stu.s_idx = e.s_idx
+	join user as u on u.user_idx = stu.user_idx
+	join department as d on d.dept_idx = stu.dept_idx
+	JOIN attendance a ON a.enroll_idx = e.enroll_idx 
+    WHERE l.lect_idx = #{lect_idx}
+	and e.enroll_status=1 and l.lect_active=0 
+	group by u.name, u.user_id, stu.s_grade, d.dept_name, e.enroll_idx
+    ORDER BY u.name;
+    
+</select>
+
+
+
+
+
+
+<!-- // 출석 정보 수정하고 저장 버튼 눌렀을때 집계결과와 출결 테이블 결석 등 상태 업데이트 -->
+
+
+<update id="attendanceUpdate" parameterType="map">
+  UPDATE attendance
+  SET attend_status = #{attend_status}
+  WHERE enroll_idx = #{enroll_idx} AND DATE(attend_date) = #{attend_date}
+</update>
+
+<select id="getTName" parameterType="Integer" resultType="String">
+
+SELECT u.name
+FROM teacher t 
+JOIN user u ON t.user_idx =u.user_idx 
+WHERE t_idx= #{t_idx}
+</select>
+</mapper>

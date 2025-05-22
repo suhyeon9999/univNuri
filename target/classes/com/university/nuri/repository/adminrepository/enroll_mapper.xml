@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aenroll">
+<!--   		<select id="searchDeptNameEnroll" resultType="map"> 지우기
+	
+  		select l.* , d.dept_name, c.*, u.name 
+  		from lecture l
+  		join department d on l.dept_idx = d.dept_idx  
+  		join class c on l.class_idx = c.class_idx  
+  		join teacher t on l.t_idx = t.t_idx  
+  		join user u on t.user_idx = u.user_idx 
+  		where d.dept_name = #{dept_name}
+  		
+  		</select> -->
+<!--   		<select id="searchBySemester" parameterType="map" resultType="map"> 지우기
+	
+  		select l.* , d.dept_name, c.*, u.name 
+  		from lecture l
+  		join department d on l.dept_idx = d.dept_idx  
+  		join class c on l.class_idx = c.class_idx  
+  		join teacher t on l.t_idx = t.t_idx  
+  		join user u on t.user_idx = u.user_idx 
+  		where YEAR(l.lect_start_date) = #{year}
+  		AND MONTH(l.lect_start_date) = #{month}
+  		
+  		</select>   -->
+  		
+  		<!-- 이것도 사실상 밑에 searchLectures로 통일해도 될듯 --> 
+  		<!-- 수강관리에서 처음 눌렀을때 나오는 개강된 강의 리스트 출력  -->
+<!-- 	<select id="getOpenLecture" resultType="map">  지우기
+	  	select l.* , d.dept_name, c.*, u.name 
+  		from lecture l
+  		join department d on l.dept_idx = d.dept_idx  
+  		join class c on l.class_idx = c.class_idx  
+  		join teacher t on l.t_idx = t.t_idx  
+  		join user u on t.user_idx = u.user_idx   		  		
+  		where l.lect_active = 0
+  		</select> -->
+  		
+  		
+  <!-- 수강관리에서 개강된 강의 리스트 전체나, 필터링해서 출력  -->
+  <select id="searchLectures" parameterType="map" resultType="map">
+  SELECT l.*, d.dept_name, c.*, u.name
+  FROM lecture l
+  JOIN department d ON l.dept_idx = d.dept_idx
+  JOIN class c ON l.class_idx = c.class_idx
+  JOIN teacher t ON l.t_idx = t.t_idx
+  JOIN user u ON t.user_idx = u.user_idx
+  WHERE l.lect_active = 0
+  <if test="lect_id != null and lect_id != ''">
+    AND l.lect_id LIKE CONCAT('%', #{lect_id}, '%')
+  </if>
+  <if test="lect_name != null and lect_name != ''">
+    AND l.lect_name LIKE CONCAT('%', #{lect_name}, '%')
+  </if>
+  <if test="dept_name != null and dept_name != ''">
+    AND d.dept_name LIKE CONCAT('%', #{dept_name}, '%')
+  </if>
+  <if test="year != null and year != '' and month != null and month != ''">
+    AND YEAR(l.lect_start_date) = #{year}
+    AND MONTH(l.lect_start_date) = #{month}
+  </if>
+  <if test="name != null and name != ''">
+    AND u.name LIKE CONCAT('%', #{name}, '%')
+  </if>
+</select>
+
+
+
+
+
+
+  		
+ <select id="getEnrollApplyReservationIs" resultType="map">
+ 
+SELECT * 
+FROM enroll_apply
+WHERE YEAR(year) = YEAR(CURDATE())
+  AND semester = CASE 
+                      WHEN MONTH(CURDATE()) BETWEEN 1 AND 6 THEN 1
+                      ELSE 2
+                    END
+  
+  AND active = 0;
+</select>
+  		
+  		
+  		
+  		
+  <select id="searchEnrollApplyLecturesReservationLook" resultType="map">
+ 
+SELECT * 
+FROM lecture as l 
+join class as c on c.class_idx = l.class_idx
+join teacher as t on t.t_idx = l.t_idx
+join user as u on u.user_idx = t.user_idx
+join department as d on d.dept_idx = t.dept_idx
+WHERE YEAR(l.lect_start_date) = YEAR(CURDATE())
+  AND MONTH(l.lect_start_date) = CASE 
+                      WHEN MONTH(CURDATE()) BETWEEN 1 AND 6 THEN 3
+                      ELSE 9
+                    END
+   AND l.lect_active = 0;
+ 
+</select>
+
+ <select id="searchEnrollApplyReservationDateTime" resultType="map">
+SELECT * 
+FROM enroll_apply
+where enroll_apply_idx = #{enroll_apply_idx}
+ 
+</select>
+
+
+
+ <select id="searchEnrollApplyLectures" resultType="map">
+SELECT * 
+FROM lecture as l 
+join class as c on c.class_idx = l.class_idx
+join teacher as t on t.t_idx = l.t_idx
+join user as u on u.user_idx = t.user_idx
+join department as d on d.dept_idx = t.dept_idx
+WHERE YEAR(l.lect_start_date) = YEAR(CURDATE()) 
+AND MONTH(l.lect_start_date) = CASE 
+                      WHEN MONTH(CURDATE()) BETWEEN 1 AND 6 THEN 3
+                      ELSE 9
+                    END 
+                
+ 
+</select>
+
+
+
+<insert id="insertEnrollApplyFirstReservation">
+    INSERT INTO enroll_apply (start_time, end_time, year, semester, active)
+    VALUES (#{start_time}, #{end_time}, CURDATE(), #{semester}, 0) 
+
+
+</insert>
+
+
+<update id="updateEnrollApplyLectActiveZero">
+    UPDATE lecture
+    SET lect_active = 0
+    WHERE lect_idx = #{lect_idx}
+
+
+</update>
+
+<update id="updateEnrollApplyLectActiveOne">
+    UPDATE lecture
+    SET lect_active = 1
+    WHERE lect_idx = #{lect_idx}
+
+
+</update>
+<update id="updateEnrollApplyLectActiveTwo">
+    UPDATE lecture
+    SET lect_active = 2
+    WHERE lect_idx = #{lect_idx}
+
+
+</update>
+
+<update id="updateEnrollApplyActiveOne">
+    UPDATE enroll_apply
+    SET active = 1
+    WHERE enroll_apply_idx = #{enroll_apply_idx}
+
+
+</update>
+
+
+
+
+<update id="updateEnrollApplyFirstReservation">
+UPDATE enroll_apply
+SET start_time = #{start_time},
+    end_time = #{end_time},
+    year = CURDATE(),
+    semester = #{semester}
+where enroll_apply_idx= #{enroll_apply_idx}                                                                                    
+
+
+</update>
+
+  		
+  		
+  		
+</mapper>

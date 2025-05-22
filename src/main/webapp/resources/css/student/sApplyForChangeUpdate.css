@@ -1,0 +1,232 @@
+@charset "UTF-8";
+
+/* 테이블 관련 */
+table {
+	margin-top: 10px;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	border-collapse: collapse;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 50px;
+}
+
+th {
+	background-color: #e8edf9;
+	width: 25%;
+}
+
+td, th {
+	border: 1px solid #ccc;
+	padding: 40px;
+}
+
+td {
+	background-color: white;
+}
+/* 검색관련 학과,강의명,교수명,강의요일,과목코드 */
+.selector {
+	display: flex;
+	flex-direction: row;
+	margin-top: 30px;
+}
+
+.selector select {
+	width: 180px;
+}
+
+.selector li label {
+	width: 90px;
+	float: left;
+	align-content: center;
+	height: 100%;
+	font-size: 18px;
+}
+
+.selector li:not(:last-child) {
+	margin-right: 120px;
+}
+
+.btn-blue {
+	margin-left: 10px;
+}
+
+.highlight, h1 {
+	display: inline-block;
+	float: left;
+}
+
+.title-container, .title-container button {
+	float: right;
+	width: 90px;
+}
+
+.title-container {
+	width: 100%;
+}
+
+#caption {
+	display: inline-block;
+	background-color: #e0e4eb;
+	width: 100%;
+	padding: 15px 15px 30px 15px;
+	border-radius: 10px;
+	height: auto;
+}
+
+.decription {
+	float: right;
+}
+
+.date-detail {
+	width: 100%;
+	height: 100%;
+	background-color: transparent;
+	color: black;
+}
+
+.font-sizes {
+	font-size: 14px;
+}
+/* 정은 추가 */
+.file-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	gap: 10px;
+	margin-bottom: 8px;
+}
+
+.filename {
+	width: 150px; /* 혹은 auto */
+	color: #444;
+	font-style: italic;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.file-input {
+	width: 600px;
+}
+
+.remove-btn {
+	background: none;
+	color: #fc522f;
+	cursor: pointer;
+	font-family: inherit;
+}
+
+.add-btn {
+	margin-top: 5px;
+	padding: 5px 10px;
+	border-radius: 4px;
+	border: 1px solid #007bff;
+	color: white;
+	background-color: dodgerblue;
+	cursor: pointer;
+}
+
+.add-btn:hover {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.a-black {
+	color: black;
+}
+
+.btn-gray {
+	float: right;
+}
+
+.a-black:hover {
+	color: darkblue;
+	font-weight: bold;
+}
+
+/* 정은 추가 */
+textarea[name="req_reason"] {
+	padding: 10px;
+	font-family: inherit;
+}
+
+.btn-submit {
+	background-color: #404cac;
+}
+
+.btn-cancel {
+	background-color: #fc522f;
+	margin-right: 10px;
+}
+
+.file-inputs {
+	display: flex;
+	flex-direction: column;
+}
+
+.file-group {
+	margin-bottom: 3px;
+}
+
+#add-file-btn {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+	background-color: #404cac;
+	height: 38px;
+	border-radius: 5px;
+	border: none;
+}
+
+
+#add-file-btn {
+	margin-top: 10px;
+	width: 95%;
+}
+
+input[type="file"] {
+	width: 81%;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+label {
+	margin-right: 10px;
+}
+
+
+.file-add {
+	display: flex;
+	align-content: space-between;
+}
+
+#file-name {
+	border: 1px solid #ccc;
+	padding: 2px;
+	display: flex;
+	width: 82%;
+	margin-left: 20px;
+	margin-bottom: 2px;
+}
+
+input[type="file"] {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.a-black{
+	color: black;
+	margin-left: 10px;
+}
+
+.a-black:hover {
+	color: darkblue;
+	font-weight: bold;
+}

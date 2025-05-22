@@ -1,0 +1,180 @@
+@charset "UTF-8";
+/* 등록, 수정, 상세보기 처리 CSS */
+.total-container {
+	margin: 20px;
+	max-width: 900px;
+}
+
+/* 제목 */
+.title-container {
+	position: relative;
+}
+
+.highlight {
+	position: relative;
+	top: 45px;
+	width: 200px;
+	height: 13px;
+	z-index: 0;
+}
+
+/* 버튼 */
+.btn-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 5px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.btn-group button, input.btn-blue{
+	width: 80px;
+	height: 38px;
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	color: white;
+	cursor: pointer;
+}
+
+.btn-group #long-btn {
+	width: 100px;
+}
+
+
+/* 테이블 */
+table {
+	border-collapse: collapse;
+	width: 100%;
+	background-color: white;
+}
+
+th {
+	background-color: #e2e2f8;
+	width: 30%;
+}
+
+th, td {
+	border: 1px solid black;
+	padding: 12px;
+	text-align: left;
+	text-align: center;
+}
+
+input, select {
+	width: 95%;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+label {
+	margin-right: 10px;
+}
+
+/* 주소입력 */
+#zipcode {
+	width: 86%;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+#search-addr {
+	margin-bottom: 5px;
+}
+/* 긴글입력,출력부분 */
+.content {
+  padding: 0;
+  height: 300px;
+  position: relative;
+  vertical-align: top;
+  white-space: pre-line;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+textarea.textarea-style {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 0px solid #ccc;
+  border-radius: 8px;
+  resize: none;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.s-content {
+  width: 100%;     /* 너비 - 부모 요소의 100% */
+  height: 300px;   /* 높이 - 고정 크기 */
+  resize: none;    /* 사용자가 크기 조절 못하게 */
+  padding: 10px;   /* 내부 여백 */
+  font-size: 16px; /* 글자 크기 */
+  border: 0px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+}
+/* 정은 추가 */
+/* Modal 창 */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+.modal-content {
+	width : 100px; /* 너비 조절 */
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	text-align: center;
+	width: 600px;
+}
+#pwInput{
+	margin-top: 30px;
+	width: 300px;
+}
+#pwCheckBtn{
+	margin-top: 20px;
+	margin-right: 120px;
+}
+
+.close {
+	float: right;
+	font-size: 20px;
+	cursor: pointer;
+}
+/* Modal 창  끝*/
+
+/* 정은 추가함 */
+#address1 {
+	margin-bottom: 5px;
+}
+/* 정은 추가함 */
+input:disabled {
+	background-color: lightgrey;
+}
+/* 정은 추가함 */
+#s_address {
+	margin-bottom: 5px;
+}
+/* 정은 추가함 */
+input[type="date"] {
+	font-family: inherit;
+	font-weight: inherit;
+	color: inherit;
+}

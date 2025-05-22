@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="excel">
+	<!-- 부서명으로 부서번호 조회 -->
+	<select id="getDeptIdxByName" parameterType="string"
+		resultType="int">
+		SELECT dept_idx
+		FROM department
+		WHERE dept_name =
+		#{dept_name}
+	</select>
+
+	<!-- 해당 연도에 학과별로 등록된 학생 수 조회 -->
+	<select id="yearcount" parameterType="map" resultType="int">
+		SELECT
+		COUNT(*) FROM student WHERE YEAR(s_enter_year) = #{yearstr} AND
+		dept_idx = #{deptIdx}
+	</select>
+
+	<!-- user 테이블 insert -->
+	<insert id="insertUserVO"
+		parameterType="com.university.nuri.vo.commonvo.UserVO"
+		useGeneratedKeys="true" keyProperty="user_idx">
+		INSERT INTO user (
+		user_id,
+		user_pw, name, birth, phone, email, user_level, status
+		) VALUES (
+		#{user_id}, #{user_pw}, #{name}, #{birth}, #{phone}, #{email},
+		#{user_level},
+		#{status}
+		)
+	</insert>
+
+	<!-- student 테이블 insert -->
+	<insert id="insertStudentVO"
+		parameterType="com.university.nuri.vo.studentvo.StudentVO">
+		INSERT INTO student (
+		user_idx, s_grade, dept_idx, s_address,
+		s_address2, s_enter_year
+		) VALUES (
+		#{user_idx}, #{s_grade}, #{dept_idx},
+		#{s_address}, #{s_address2}, CURRENT_DATE
+		)
+	</insert>
+
+</mapper>

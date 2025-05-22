@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="objection">
+<select id="objectionList" resultType="map">
+select * from objection as o
+join enroll as e on e.enroll_idx = o.enroll_idx
+join lecture as l on l.lect_idx = e.lect_idx
+join student as s on s.s_idx = e.s_idx
+join user as u on s.user_idx = u.user_idx
+where o.objection_status= #{objection_status} and l.t_idx=#{t_idx}
+</select>
+
+
+
+
+<select id="objectionDetail" resultType="map">
+select * from objection as o 
+join enroll as e on e.enroll_idx = o.enroll_idx
+join lecture as l on l.lect_idx = e.lect_idx
+join department as d on d.dept_idx = l.dept_idx
+join student as s on s.s_idx = e.s_idx
+join user as u on u.user_idx = s.user_idx
+where o.objection_idx = #{objection_idx}
+</select>
+
+
+
+<select id="searchScore" resultType="map">
+select * from score as s
+join enroll as e on e.enroll_idx = s.enroll_idx
+join student as stu on stu.s_idx = e.s_idx
+join user as u on u.user_idx = stu.user_idx
+join lecture as l on l.lect_idx = e.lect_idx
+where e.enroll_idx = #{enroll_idx}
+</select>
+
+
+<!-- // 중간, 기말, 과제, 출석 점수, 토탈 점수 업데이트 -->
+<update id="scoreUpdateOk" parameterType="map">
+update score
+set score_mid = #{score_mid}, score_final = #{score_final}, score_attend = #{score_attend}, score_assign = #{score_assign}, score_total = #{score_total}
+where enroll_idx=#{enroll_idx}
+</update>
+
+
+<update id="updateObjectionStatus" parameterType="map">
+update objection
+set objection_status=#{objection_status}
+where objection_idx=#{objection_idx}
+
+</update>
+</mapper>
+

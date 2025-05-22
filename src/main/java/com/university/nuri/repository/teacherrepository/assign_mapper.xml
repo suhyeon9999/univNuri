@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="assign">
+	<select id="submitList" parameterType="String" resultType="map">
+		SELECT u.name, sub.submit_write_date, sub.submit_idx
+		FROM submit sub
+		JOIN enroll e ON
+		sub.enroll_idx = e.enroll_idx
+		JOIN student s ON e.s_idx = s.s_idx
+		JOIN
+		user u ON u.user_idx = s.user_idx
+		WHERE sub.assign_idx = #{assign_idx}
+		ORDER BY sub.submit_write_date DESC;
+	</select>
+	<select id="countSubmit" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM submit
+		WHERE assign_idx = #{assign_idx}
+	</select>
+	<select id="countCourseS" parameterType="String"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM enroll
+		WHERE lect_idx = (SELECT lect_idx
+		FROM assign WHERE assign_idx =
+		#{assign_idx});
+	</select>
+	<select id="assignDetail" parameterType="String"
+		resultType="com.university.nuri.vo.commonvo.AssignVO">
+		select *
+		from assign
+		where assign_idx = #{assign_idx}
+	</select>
+
+	<select id="getTLecName" parameterType="String" resultType="map">
+		select l.lect_name, u.name
+		from lecture l
+		join teacher t on
+		t.t_idx=l.t_idx
+		join user u on u.user_idx=t.user_idx
+		where
+		lect_idx=#{lect_idx}
+	</select>
+	<select id="getSubmitDetail" parameterType="String"
+		resultType="com.university.nuri.vo.studentvo.SubmitVO">
+		select *
+		from submit
+		where submit_idx = #{submit_idx}
+	</select>
+	<insert id="assignListMakeInsert"
+		parameterType="com.university.nuri.vo.commonvo.AssignVO"
+		useGeneratedKeys="true" keyProperty="assign_idx">
+		INSERT INTO assign (lect_idx,
+		assign_title,
+		assign_content, upload_time, start_time, assign_due_date)
+		VALUES
+		(#{lect_idx}, #{assign_title}, #{assign_content}, NOW(),
+		#{start_time}, #{assign_due_date});
+	</insert>
+	<update id="assginUpdate"
+		parameterType="com.university.nuri.vo.commonvo.AssignVO">
+		update assign
+		set assign_title=#{assign_title},
+		assign_content=#{assign_content},
+		start_time=#{start_time},
+		assign_due_date=#{assign_due_date}
+		where assign_idx = #{assign_idx}
+	</update>
+	<update id="assignDelete" parameterType="String">
+		update assign
+		set assign_active =1
+		where assign_idx =#{assign_idx}
+	</update>
+	<select id="getPwd" parameterType="String" resultType="String">
+		SELECT
+		user_pw
+		FROM teacher t
+		JOIN user u ON t.user_idx
+		= u.user_idx
+		WHERE
+		t_idx=#{t_idx}
+	</select>
+	<select id="getStuName" parameterType="String" resultType="map">
+		select u.name
+		from submit sb
+		join enroll e on e.enroll_idx =
+		sb.enroll_idx
+		join student s on s.s_idx= e.s_idx
+		join user u on
+		s.user_idx = u.user_idx
+		where sb.submit_idx= #{submit_idx}
+	</select>
+	<insert id="insertAssignFile"
+		parameterType="com.university.nuri.vo.commonvo.AssignFileVO">
+		INSERT INTO assign_file (assign_idx, assign_f_name,
+		f_size, f_date, f_type,
+		assign_f_order)
+		VALUES (#{assign_idx},
+		#{assign_f_name}, #{f_size}, now(), #{f_type},
+		#{assign_f_order})
+	</insert>
+	<select id="getAssignFiles" parameterType="String"
+		resultType="com.university.nuri.vo.commonvo.AssignFileVO">
+		SELECT * FROM assign_file
+		WHERE assign_idx = #{assign_idx}
+		ORDER BY assign_f_order asc
+	</select>
+	<select id="getDueAssignments"
+		resultType="com.university.nuri.vo.commonvo.AssignVO">
+		SELECT * FROM assign
+		WHERE assign_due_date &lt; NOW() AND
+		end = 0
+	</select>
+	<update id="updateAssignEnd" parameterType="String">
+		UPDATE assign SET end
+		= 1 WHERE assign_idx = #{assign_idx}
+	</update>
+	<select id="getSubmitFiles">
+		SELECT * FROM submit_file
+		WHERE submit_idx =
+		#{submit_idx}
+		ORDER BY
+		submit_f_order asc
+	</select>
+	<delete id="deleteAssignFilesByAssignIdx" parameterType="String">
+		DELETE FROM assign_file
+		WHERE assign_idx = #{assign_idx}
+	</delete>
+		<select id="isEnd" parameterType="String" resultType="String">
+    SELECT end 
+	 FROM assign 
+    WHERE assign_idx = #{assign_idx} 
+	</select>
+</mapper>
+
+
+
+

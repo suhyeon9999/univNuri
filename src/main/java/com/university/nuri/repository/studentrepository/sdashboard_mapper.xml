@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sdashboard">
+
+	<!-- 학생 정보 조회 -->
+	<select id="getSInfo" parameterType="String" resultType="map">
+		SELECT
+		u.name, d.dept_name, u.user_id
+		FROM student s
+		JOIN user u ON s.user_idx
+		= u.user_idx
+		JOIN department d ON d.dept_idx = s.dept_idx
+		WHERE s.s_idx
+		= #{s_idx}
+	</select>
+
+	<!-- 이번 학기 수강 강의 리스트 -->
+	<select id="sThisLectList" parameterType="String"
+		resultType="map">
+	  <![CDATA[
+		SELECT
+			l.lect_idx,
+			l.lect_name,
+			l.lect_start_time,
+			l.lect_end_time,
+			l.lect_day,
+			c.class_room,
+			c.class_building
+		FROM lecture l
+		JOIN class c ON l.class_idx = c.class_idx
+		JOIN enroll e ON e.lect_idx = l.lect_idx
+		WHERE
+			e.s_idx = #{s_idx}
+			AND e.enroll_status = 1
+			AND l.lect_active = 0
+			AND l.lect_start_date <= CURRENT_TIMESTAMP
+			AND CURRENT_TIMESTAMP <= l.lect_end_date
+	  ]]>
+	</select>
+	<!-- 오늘 수업 일정 -->
+	<select id="sTodayLectList" parameterType="map" resultType="map">
+		SELECT
+		l.lect_idx,
+		l.lect_name,
+		DATE_FORMAT(l.lect_start_time, '%H:%i')
+		AS lect_start_time,
+		DATE_FORMAT(l.lect_end_time, '%H:%i') AS
+		lect_end_time,
+		l.lect_day,
+		c.class_room,
+		c.class_building
+		FROM lecture l
+		JOIN class c ON l.class_idx = c.class_idx
+		JOIN enroll e ON l.lect_idx =
+		e.lect_idx
+		WHERE
+		e.s_idx = #{s_idx}
+		AND e.enroll_status = 1
+		AND
+		l.lect_active = 0
+		AND l.lect_day LIKE CONCAT('%', #{lect_day}, '%')
+		AND
+		CURRENT_DATE BETWEEN l.lect_start_date AND l.lect_end_date
+	</select>
+
+	<!-- 과제 제출/미제출 개수 -->
+	<select id="getAssignmentStatus" parameterType="String"
+		resultType="map">
+		SELECT
+		IFNULL(SUM(CASE WHEN s.submit_idx IS NOT NULL THEN 1
+		ELSE 0 END), 0) AS submitted,
+		IFNULL(SUM(CASE WHEN s.submit_idx IS NULL
+		THEN 1 ELSE 0 END), 0) AS
+		notSubmitted
+		FROM enroll e
+		JOIN lecture l ON
+		e.lect_idx = l.lect_idx
+		JOIN assign a ON a.lect_idx = l.lect_idx
+		LEFT
+		JOIN submit s ON s.assign_idx = a.assign_idx AND s.enroll_idx =
+		e.enroll_idx
+		WHERE e.s_idx = #{s_idx}
+		AND e.enroll_status = 1
+		AND
+		a.assign_active = 0
+	</select>
+
+	<!-- 이수 학점 -->
+	<select id="getCompletedCredit" parameterType="String"
+		resultType="int">
+		SELECT
+		IFNULL(SUM(l.lect_credit), 0)
+		FROM enroll e
+		JOIN
+		lecture l ON e.lect_idx = l.lect_idx
+		WHERE e.s_idx
+		= #{s_idx}
+		AND
+		e.enroll_status = 1
+		AND l.lect_active = 0
+	</select>
+
+	<!-- 수강내역 (졸업한 학생만) -->
+	<select id="allLectList" parameterType="String" resultType="map">
+		  <![CDATA[
+		SELECT
+		l.lect_idx,
+		l.lect_name,
+		l.lect_start_time,
+		l.lect_end_time,
+		l.lect_day,
+		c.class_room,
+		c.class_building
+		FROM lecture l
+		JOIN class c ON l.class_idx = c.class_idx
+		JOIN enroll e
+		ON e.lect_idx = l.lect_idx
+		WHERE
+		e.s_idx = #{s_idx}
+		AND e.enroll_status = 1
+		AND l.lect_active = 0
+		]]>
+	</select>
+</mapper>

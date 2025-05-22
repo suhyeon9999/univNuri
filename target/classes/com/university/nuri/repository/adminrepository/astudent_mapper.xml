@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="astudent">
+	<select id="getStudentList" resultType="map">
+		SELECT s.*, u.user_id,
+		u.name, d.dept_name
+		FROM student s
+		JOIN user u ON s.user_idx =
+		u.user_idx
+		JOIN department d ON s.dept_idx = d.dept_idx
+		WHERE u.active =
+		0 AND u.status IN (1, 2) AND s.s_active = 0
+		ORDER BY s.s_idx ASC
+	</select>
+	<select id="getFilteredStudentList" parameterType="map"
+		resultType="map">
+		SELECT s.*, u.user_id, u.name, d.dept_name
+		FROM student s
+		JOIN user u ON
+		s.user_idx = u.user_idx
+		JOIN department d ON s.dept_idx = d.dept_idx
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			u.active = 0 AND u.status IN (1, 2)
+			AND s.s_active = 0 
+
+			<if test="name != null and name != ''">
+				AND u.name LIKE CONCAT('%', #{name}, '%')
+			</if>
+			<if test="user_id != null and user_id != ''">
+				AND u.user_id LIKE CONCAT('%', #{user_id}, '%')
+			</if>
+		</trim>
+		ORDER BY s.s_idx ASC
+	</select>
+
+	<select id="getDetailStudent" parameterType="String"
+		resultType="map"> SELECT u.name, u.birth, u.user_id, u.status, u.email,
+		u.phone, s.s_idx, s.s_grade, s.dept_idx, d.dept_name, s.s_address,
+		s.s_address2 FROM student s JOIN user u ON s.user_idx = u.user_idx
+		JOIN department d ON s.dept_idx = d.dept_idx WHERE u.user_id =
+		#{user_id}
+	</select>
+
+	<select id="getDeptList" resultType="map">
+		SELECT dept_idx, dept_name
+		FROM department WHERE dept_active = 0
+		ORDER BY dept_idx ASC
+	</select>
+
+	<update id="getUpdateUserTable" parameterType="map">
+		UPDATE user
+		SET
+		name = #{name},
+		birth = #{birth},
+		email = #{email},
+		phone = #{phone}
+		WHERE user_id = #{user_id}
+	</update>
+
+	<update id="getUpdateStudentTable" parameterType="map">
+		UPDATE student
+		SET
+		s_grade = #{s_grade},
+		dept_idx = #{dept_idx},
+		s_address =
+		#{s_address},
+		s_address2 = #{s_address2}
+		WHERE user_idx = (
+		SELECT
+		user_idx FROM user WHERE user_id = #{user_id}
+		)
+	</update>
+
+	<select id="getAStudentCheckPassword" parameterType="String"
+		resultType="String">
+		SELECT user_pw
+		FROM user
+		WHERE user_id = #{user_id}
+	</select>
+
+	<update id="getDeleteSUserTable" parameterType="String">
+		UPDATE user
+		SET
+		active = 1
+		WHERE user_id = #{user_id}
+	</update>
+
+	<update id="getDeleteSStudentTable" parameterType="Integer">
+		UPDATE student
+		SET
+		s_active = 1
+		WHERE s_idx = #{s_idx}
+	</update>
+
+	<!-- 유저 등록 -->
+	<insert id="insertUser"
+		parameterType="com.university.nuri.vo.commonvo.UserVO">
+		insert into user(user_level, user_id, user_pw, name,
+		phone, email, status,
+		birth)
+		values(#{user_level}, #{user_id},
+		#{user_pw}, #{name}, #{phone}, #{email}, #{status},
+		#{birth})
+	</insert>
+
+	<select id="selectUserIdx"
+		parameterType="com.university.nuri.vo.commonvo.UserVO"
+		resultType="String">
+		select user_idx from user where user_id = #{user_id}
+	</select>
+
+
+	<!-- 학생 등록 -->
+	<insert id="insertStudent"
+		parameterType="com.university.nuri.vo.studentvo.StudentVO">
+		INSERT INTO student (
+		dept_idx, user_idx, s_address, s_address2,
+		s_enter_year, s_grade, s_applycredit, s_maxcredit, s_enrollcredit, s_active
+		) VALUES (
+		#{dept_idx}, #{user_idx}, #{s_address}, #{s_address2},
+		CURDATE(), #{s_grade}, #{s_applycredit}, #{s_maxcredit}, #{s_enrollcredit},
+		DEFAULT
+		)
+	</insert>
+
+	<!-- 학생 년도 조회 -->
+	<select id="yearcount" resultType="int">
+		SELECT COUNT(*)
+		FROM student
+		WHERE YEAR(s_enter_year) = #{yearstr}
+		AND dept_idx = #{deptIdx}
+	</select>
+</mapper>
