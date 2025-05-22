@@ -72,7 +72,7 @@
 	      <div class="article-wrapper">
 	        <i class="fa-solid fa-arrow-up"></i>
 	        <a class="article" 
-	         href="/detailNotice?notice_idx=${previousNotice.notice_idx }&cPage=${paging.nowPage}">${previousNotice.title }</a>
+	         href="/detailNotice?notice_idx=${previousNotice.notice_idx }&cPage=${paging.nowPage}"><span>이전글 &nbsp;&nbsp;&nbsp;</span>${previousNotice.title }</a>
 	      </div>	
 	      <hr />
 		</c:if>
@@ -80,7 +80,7 @@
 	      <div class="article-wrapper">
 	        <i class="fa-solid fa-arrow-down"></i>
 	        <a class="article" 
-	         href="/detailNotice?notice_idx=${nextNotice.notice_idx }&cPage=${paging.nowPage}">${nextNotice.title }</a>
+	         href="/detailNotice?notice_idx=${nextNotice.notice_idx }&cPage=${paging.nowPage}"><span>다음글 &nbsp;&nbsp;&nbsp;</span>${nextNotice.title }</a>
 	      </div>	
 	      <hr />
 		</c:if>		

@@ -63,10 +63,22 @@ public class SubjectSetServiceImpl implements SubjectSetService{
 	@Transactional
 	public int updateSubjectSet(SubjectSetVO subjectSetVO, int subSetNumInt, String[] subjectIdxArr) {
 	    try {
-	        // 1. 새로운 과목군 번호 생성
+	    	 // 0. (추가) 기존 과목군의 이름을 DB에서 꺼내 놓는다
+	        String originalName = subjectSetDAO.getSubjectSetNameByNum(subSetNumInt);
+
+	        // 1. (추가) 이름이 변경된 경우에만 중복 검사
+	        String newName = subjectSetVO.getSub_set_name().trim();
+	        if (!newName.equals(originalName)) {
+	            if (subjectSetDAO.chkSubSetName(newName)) {
+	                throw new IllegalArgumentException("이미 존재하는 과목군 이름입니다.");
+	            }
+	        }
+	    	
+	    	// 1. 새로운 과목군 번호 생성
 	        String subSetNum = subjectSetDAO.getNextSubSetNum();  // 새로운 과목군 번호 생성
 	        System.out.println("Generated subSetNum: " + subSetNum);  // 디버깅 로그 추가
-
+	        
+	        
 	        // 2. 기존 과목군의 active 값을 0으로 업데이트 (비활성화)
 	        int updateResult = subjectSetDAO.updateSubjectSet(subSetNumInt);
 	        System.out.println("Updating subject set with sub_set_num: " + subSetNumInt);  // 디버깅 로그
