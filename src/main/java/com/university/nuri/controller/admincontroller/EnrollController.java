@@ -139,11 +139,11 @@ public class EnrollController {
 	@GetMapping("/moveEnrollApplyList")
 	public ModelAndView moveEnrollApplyList() {
 	    ModelAndView mv = new ModelAndView();
-	    //LocalDate today = LocalDate.now();
+	    LocalDate today = LocalDate.now();
 	    
 	 // 실제 날짜 대신 테스트 날짜로 강제 설정
-	   LocalDate today = LocalDate.of(2025, 8, 2); // 예: 2학기 종료 테스트용
-	    LocalDateTime now = LocalDateTime.of(2025, 8, 2, 12, 0);
+	   //LocalDate today = LocalDate.of(2025, 8, 2); // 예: 2학기 종료 테스트용
+	    //LocalDateTime now = LocalDateTime.of(2025, 8, 2, 12, 0);
 	    int currentYear = today.getYear();
 	    int currentMonth = today.getMonthValue();
 
@@ -180,7 +180,7 @@ public class EnrollController {
 	        mv.addObject("reservationDateTimeList", reservationDateTimeList);
 
 	        // end_time 지난 경우에는 수정/취소 버튼 비활성화 플래그 추가
-	        //LocalDateTime now = LocalDateTime.now(); // 현재 시각 포함
+	        LocalDateTime now = LocalDateTime.now(); // 현재 시각 포함
 	       
 	        LocalDateTime endDateTime = endTime.toLocalDateTime();
 
