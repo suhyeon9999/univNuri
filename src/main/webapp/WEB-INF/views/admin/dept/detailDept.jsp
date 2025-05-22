@@ -20,7 +20,8 @@
 				<h1>학과 상세보기</h1>
 			</div>
 			<div class="btn-group">
-				<button class="btn-red">삭제</button>
+				<button class="btn-red"
+					onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='${pageContext.request.contextPath}/deleteDept?dept_idx=${detailDept.dept_idx}'">삭제</button>
 				<button class="btn-blue" 
 					onclick="location.href='${pageContext.request.contextPath}/moveUpdateDept?dept_idx=${detailDept.dept_idx}'">수정</button>				
 			</div>
