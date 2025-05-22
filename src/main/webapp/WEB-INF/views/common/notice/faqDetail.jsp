@@ -66,7 +66,7 @@
 	      <div class="article-wrapper">
 	        <i class="fa-solid fa-arrow-up"></i>
 	        <a class="article" 
-	         href="/detailFaq?faq_idx=${previousFaq.faq_idx }&cPage=${paging.nowPage}$a_grade=${detailFaq.a_grade}">${previousFaq.title }</a>
+	         href="/detailFaq?faq_idx=${previousFaq.faq_idx }&cPage=${paging.nowPage}$a_grade=${detailFaq.a_grade}"><span>이전글 &nbsp;&nbsp;&nbsp;</span>${previousFaq.title }</a>
 	      </div>	
 	      <hr />
 		</c:if>
@@ -74,7 +74,7 @@
 	      <div class="article-wrapper">
 	        <i class="fa-solid fa-arrow-down"></i>
 	        <a class="article" 
-	         href="/detailFaq?faq_idx=${nextFaq.faq_idx }&cPage=${paging.nowPage}$a_grade=${detailFaq.a_grade}">${nextFaq.title }</a>
+	         href="/detailFaq?faq_idx=${nextFaq.faq_idx }&cPage=${paging.nowPage}$a_grade=${detailFaq.a_grade}"><span>다음글 &nbsp;&nbsp;&nbsp;</span>${nextFaq.title }</a>
 	      </div>
 	
 	      <hr />

@@ -87,4 +87,12 @@ public class SubjectSetDAO {
 			return 0;
 		}
 	}
+	public String getSubjectSetNameByNum(int subSetNumInt) {
+		try {
+			return sqlSessionTemplate.selectOne("subject_set.getSubjectSetNameByNum", subSetNumInt);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
