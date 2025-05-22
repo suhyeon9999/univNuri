@@ -187,27 +187,15 @@ public class SubjectSetController {
 		        @RequestParam(required = false) String selectedSubjectsIdx) {
 		    try {
 		        ModelAndView mv = new ModelAndView();
-		        // 과목군명 중복 체크 (자신 제외)
-		        int currentSubSetNum = Integer.parseInt(subjectSetVO.getSub_set_num());
-		        if (subjectSetService.chkSubSetName(subjectSetVO.getSub_set_name())) {
-		            mv = new ModelAndView("admin/lect/updateSubjectSet");
-		            mv.addObject("errorMessage", "이미 존재하는 과목군명입니다.");
-		            mv.addObject("detailSubjectSet", subjectSetService.detailSubjectSet(currentSubSetNum));
-		            mv.addObject("deptList", deptService.getAllDeptList());
-		            mv.addObject("subjectList", subjectService.getAllSubjectList());
-		            return mv;
+
+		     // subjectIdxArr 준비
+		        String[] subjectIdxArr = (selectedSubjectsIdx != null)
+		            ? selectedSubjectsIdx.split(",")
+		            : new String[0];
+		        if (subjectIdxArr.length == 0) {
+		            throw new IllegalArgumentException("최소 한 개 이상의 과목을 선택해야 합니다.");
 		        }
 
-		        // subjectIdxArr 생성 및 검증
-		        String[] subjectIdxArr = selectedSubjectsIdx != null ? selectedSubjectsIdx.split(",") : new String[0];
-		        if (subjectIdxArr.length == 0) {
-		            mv = new ModelAndView("admin/lect/updateSubjectSet");
-		            mv.addObject("errorMessage", "최소 한 개 이상의 과목을 선택해야 합니다.");
-		            mv.addObject("detailSubjectSet", subjectSetService.detailSubjectSet(currentSubSetNum));
-		            mv.addObject("deptList", deptService.getAllDeptList());
-		            mv.addObject("subjectList", subjectService.getAllSubjectList());
-		            return mv;
-		        }
 
 		      
 

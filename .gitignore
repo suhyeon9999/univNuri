@@ -21,4 +21,3 @@ Thumbs.db
 
 # 패키지 설치 결과물(Node.js 등 있을 경우)
 /node_modules/
-/.metadata/
