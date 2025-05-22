@@ -97,6 +97,14 @@
 		WHERE sub.sub_set_num = #{sub_set_num}
 		GROUP BY sub.sub_set_num, sub.sub_set_name, d.dept_name, sub.dept_idx
 	</select>
+	<!-- 과목군 이름 가져오기 -->
+<select id="getSubjectSetNameByNum" parameterType="int" resultType="String">
+  SELECT sub_set_name
+    FROM subject_set
+   WHERE sub_set_num = #{value}
+     AND sub_set_active = 0
+   LIMIT 1
+</select>
 	<!-- 과목군 수정 active  -->
 	<update id="updateSubjectSet" parameterType="int">
 		UPDATE subject_set
