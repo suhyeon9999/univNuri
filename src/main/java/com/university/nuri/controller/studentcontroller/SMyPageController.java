@@ -182,7 +182,7 @@ public class SMyPageController {
 		Map<String, Object> sInfo = (Map<String, Object>) session.getAttribute("sInfo");
 		int s_idx = (Integer) sInfo.get("s_idx");  // 또는 필요 시 String으로 꺼내서 parseInt
 		String pws = passwordEncoder.encode(newPassword);
-		int result = sMyPageService.updateSpassword(s_idx, newPassword);
+		int result = sMyPageService.updateSpassword(s_idx, pws);
 
 		if(result > 0) {
 		     // 세션의 비밀번호 정보도 업데이트
