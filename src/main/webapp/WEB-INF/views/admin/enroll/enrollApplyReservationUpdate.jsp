@@ -37,7 +37,7 @@ th, td {
 
 /* 테이블 열 너비 비율 설정 */
 table thead th:nth-child(1), /* 선택 */ table tbody td:nth-child(1) {
-	width: 5%;
+	width: 6%;
 }
 
 table thead th:nth-child(2), /* No. */ table tbody td:nth-child(2) {
@@ -45,7 +45,7 @@ table thead th:nth-child(2), /* No. */ table tbody td:nth-child(2) {
 }
 
 table thead th:nth-child(3), /* 강의코드 */ table tbody td:nth-child(3) {
-	width: 11%;
+	width: 9%;
 }
 
 table thead th:nth-child(4), /* 강의명 */ table tbody td:nth-child(4) {
@@ -57,7 +57,7 @@ table thead th:nth-child(5), /* 개설학과 */ table tbody td:nth-child(5) {
 }
 
 table thead th:nth-child(6), /* 학점 */ table tbody td:nth-child(6) {
-	width: 5%;
+	width: 6%;
 }
 
 table thead th:nth-child(7), /* 담당교수 */ table tbody td:nth-child(7) {
