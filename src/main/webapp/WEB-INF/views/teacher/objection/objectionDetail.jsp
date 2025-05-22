@@ -58,8 +58,9 @@
             <div class="highlight"></div>
             <h1>이의제기 관리</h1>
           </div>
-
+		<c:if test="${objectionMap.objection_status == 0}">
           <button type="submit" class="btn-orange">성적조회 및 수정</button>
+         </c:if>
         </div>
    <input type="hidden" name="enroll_idx" value="${objectionMap.enroll_idx}"> 
    <input type="hidden" name="objection_idx" value="${objectionMap.objection_idx}"> 
