@@ -76,6 +76,14 @@
     function validateForm() {
         var title = document.forms["faqForm"]["title"].value;
         var content = document.forms["faqForm"]["content"].value;
+        if (title === "") {
+            alert("제목을 입력해주세요.");
+            return false;
+        }
+        if (content === "") {
+            alert("내용을 입력해주세요.");
+            return false;
+        }
         if (title.length > 100) {
             alert("제목은 100자를 초과할 수 없습니다.");
             return false;

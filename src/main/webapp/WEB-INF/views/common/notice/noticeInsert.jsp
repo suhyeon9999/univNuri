@@ -75,19 +75,27 @@
 		</div>
 	</footer>
 	<script>
-    function validateForm() {
-        var title = document.forms["noticeForm"]["title"].value;
-        var content = document.forms["noticeForm"]["content"].value;
-        if (title.length > 100) {
-            alert("제목은 100자를 초과할 수 없습니다.");
-            return false;
-        }
-        if (content.length > 4000) {
-            alert("내용은 4000자를 초과할 수 없습니다.");
-            return false;
-        }
-        return true;
-    }
+	function validateForm() {
+	    var title = document.forms["noticeForm"]["title"].value.trim();
+	    var content = document.forms["noticeForm"]["content"].value.trim();
+	    if (title === "") {
+	        alert("제목을 입력해주세요.");
+	        return false;
+	    }
+	    if (content === "") {
+	        alert("내용을 입력해주세요.");
+	        return false;
+	    }
+	    if (title.length > 100) {
+	        alert("제목은 100자를 초과할 수 없습니다.");
+	        return false;
+	    }
+	    if (content.length > 4000) {
+	        alert("내용은 4000자를 초과할 수 없습니다.");
+	        return false;
+	    }
+	    return true;
+	}
 </script>
 </body>
 </html>
