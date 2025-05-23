@@ -178,7 +178,7 @@
 										<c:forEach var="k" items="${subjectSetList}" varStatus="v">
 											<tr>
 												<td>${v.index + 1}</td>
-												<td><a href="/detailSubjectSet?sub_set_idx=${k.sub_set_idx}">${k.sub_set_name}</a></td>
+												<td><a href="/detailSubjectSet?sub_set_num=${k.sub_set_num}">${k.sub_set_name}</a></td>
 												<td>${k.dept_name}</td>
 												<td>
 													<c:choose>
@@ -192,7 +192,7 @@
 												</td>
 											</tr>
 										</c:forEach>
-									</tbody>
+									</tbody>       
 								</table>
 							</c:otherwise>
 						</c:choose>
@@ -261,10 +261,10 @@
 	    // 초기 탭 설정
 	    var currentUrl = window.location.pathname;
 	    var activeTab = 'lect';
-	    if (currentUrl.includes('subject') || currentUrl.includes('searchSubject')) {
-	        activeTab = 'subject';
-	    } else if (currentUrl.includes('subjectSet') || currentUrl.includes('subjectSetList')) {
+	   if (currentUrl.includes('subjectSet') || currentUrl.includes('subjectSetList')) {
 	        activeTab = 'subjectSet';
+	   } else if (currentUrl.includes('subject') || currentUrl.includes('searchSubject')) {
+	        activeTab = 'subject';
 	    }
 
 	    console.log('Initial activeTab:', activeTab);

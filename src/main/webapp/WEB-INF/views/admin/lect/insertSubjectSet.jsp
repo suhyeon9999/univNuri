@@ -19,10 +19,10 @@
         <c:if test="${not empty errorMessage}">
             <p id="error">${errorMessage}</p>
         </c:if>
-        <form id="subjectSetForm" action="/insertSubjectSet" method="post">
+        <form id="subjectSetForm" action="/insertSubjectSet" method="post"  onsubmit="return checkForm();" >
         <div class="btn-group">
-            <button class="btn-red" onclick="location.href='/subjectSetList'">취소</button>
-            <input type="button" class="btn-blue" value="등록" onclick="submitForm()" />
+            <button type="button" class="btn-red" onclick="location.href='/subjectSetList'">취소</button>
+            <input type="submit" class="btn-blue" value="등록"  />
         </div>
             <table>
                 <tr>
@@ -176,9 +176,11 @@ function applySubject() {
 }
 
 function submitForm() {
-    document.getElementById('subjectSetForm').submit();
+	 if(checkForm()){
+	        document.getElementById('subjectSetForm').submit();
+	    }
 }
-
+  
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = "none";
 }
@@ -212,6 +214,15 @@ window.onclick = function(event) {
         event.target.style.display = "none";
     }
 }
+function checkForm() {
+	  var sub_set_name = document.getElementById("sub_set_name").value;
+	  if (sub_set_name.trim() === "") {
+	    alert("과목군이름을 입력해주세요.");
+	    return false;
+	  }
+	  return true; // 모든 검사를 통과하면 폼 제출
+	}
+
 </script>
 </body>
 </html>
