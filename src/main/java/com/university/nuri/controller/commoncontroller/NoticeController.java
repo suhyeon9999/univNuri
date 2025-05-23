@@ -167,8 +167,7 @@ public class NoticeController {
 			ModelAndView mv = new ModelAndView();
 			int result = noticeService.insertNotice(noticeVO);
 			if (result > 0) {
-				mv.addObject("successMessage", "insert");
-				mv.setViewName("redirect:/noticeList");
+				mv.setViewName("redirect:/detailNotice?notice_idx="+noticeVO.getNotice_idx());
 				return mv;
 			}else {
 				mv.setViewName("redirect:/moveInsertNotice");
@@ -418,8 +417,7 @@ public class NoticeController {
 			ModelAndView mv = new ModelAndView();
 			int result = noticeService.faqInsert(faqVO);
 			if (result > 0) {
-				mv.addObject("successMessage", "insert");
-				mv.setViewName("redirect:/faqList");
+				mv.setViewName("redirect:/detailFaq?faq_idx="+faqVO.getFaq_idx());
 				return mv;
 			}else {
 				mv.setViewName("redirect:/moveFaqInsert");

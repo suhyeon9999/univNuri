@@ -5,7 +5,7 @@
 <mapper namespace="notice">
 	<!-- 공지사항 등록 -->
 	<insert id="insertNotice"
-		parameterType="com.university.nuri.vo.commonvo.NoticeVO">
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO"  useGeneratedKeys="true" keyProperty="notice_idx">
 		insert into notice(admin_idx, title, content, necessary)
 		values (#{admin_idx}, #{title}, #{content}, #{necessary})
 	</insert>
@@ -170,7 +170,7 @@
 	</select>
 	<!-- faq 등록 -->
 	<insert id="faqInsert"
-		parameterType="com.university.nuri.vo.commonvo.FaqVO">
+		parameterType="com.university.nuri.vo.commonvo.FaqVO"  useGeneratedKeys="true" keyProperty="faq_idx">
 		insert into faq(admin_idx, title, content)
 		values
 		(#{admin_idx}, #{title}, #{content})
