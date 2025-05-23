@@ -47,7 +47,7 @@
 			</div>
 		</header>
 		  <div class="container">
-		  	<p class="necessary">
+		  	<p >
 				<c:choose>
 						<c:when test="${detailNotice.necessary == '0' }">일반공지</c:when>
 						<c:when test="${detailNotice.necessary == '1' }">중요공지</c:when>						

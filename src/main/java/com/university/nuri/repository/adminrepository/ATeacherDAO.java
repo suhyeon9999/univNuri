@@ -73,12 +73,11 @@ public class ATeacherDAO {
 		}
 	}
 
-	public int getUpdateStudentTable(String user_id, int dept_idx, int t_dept_chair) {
+	public int getUpdateTeacherTable(String user_id, int dept_idx) {
 		try {
 			Map<String, Object> updateMap = new HashMap<>();
 			updateMap.put("user_id", user_id);
 			updateMap.put("dept_idx", dept_idx);
-			updateMap.put("t_dept_chair", t_dept_chair);
 			return sessionTemplate.update("ateacher.getUpdateTeacherTable", updateMap);
 		} catch (Exception e) {
 			e.printStackTrace();

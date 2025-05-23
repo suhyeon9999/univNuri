@@ -57,8 +57,8 @@
 				<textarea class="line-textarea" name="content"  required  >${detailFaq.content }</textarea>
 			</div>
 				<div class="buttons">
-					<button class="btn-gray" 
-					onclick="location.href='${pageContext.request.contextPath}/faqList'">목록</button>
+					<button type="button" class="btn-gray" 
+					onclick="location.href='${pageContext.request.contextPath}/detailFaq?faq_idx=${detailFaq.faq_idx }'">취소</button>
 					<button type="submit" class="btn-gray">등록</button>
 					<input type="hidden" name="faq_idx"	value="${detailFaq.faq_idx }">
 					<input type="hidden" name="cPage"	value="${cPage }">
@@ -76,6 +76,14 @@
     function validateForm() {
         var title = document.forms["faqForm"]["title"].value;
         var content = document.forms["faqForm"]["content"].value;
+        if (title === "") {
+            alert("제목을 입력해주세요.");
+            return false;
+        }
+        if (content === "") {
+            alert("내용을 입력해주세요.");
+            return false;
+        }
         if (title.length > 100) {
             alert("제목은 100자를 초과할 수 없습니다.");
             return false;

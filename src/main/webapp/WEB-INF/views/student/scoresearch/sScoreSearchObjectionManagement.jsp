@@ -36,6 +36,7 @@
 
   <!-- 전체 objectionList를 반복 -->
   <c:forEach var="obj" items="${objectionList}" varStatus="vs">
+ 	
     <!-- objection_active == 0 인 경우만 출력 -->
     <c:if test="${obj.objection_active == 0}">
       <!-- 출력된 row 수 증가 -->
@@ -49,15 +50,16 @@
             <c:otherwise>2</c:otherwise>
           </c:choose>
         </td>
-        <td>${obj.lect_name}</td>
+        <td><input hidden="lect_idx" value="${obj.lect_idx}">
+        <a style="color: black;" href="/sScoreSearchObjectionDetail?objection_idx=${obj.objection_idx}&lect_idx=${obj.lect_idx}">${obj.lect_name}</a></td>
         <td>${obj.professor_name}</td>
         <td><fmt:formatDate value="${obj.apply_date}" pattern="yyyy-MM-dd"/></td>
         <td>
           <c:choose>
-            <c:when test="${obj.approve_objection == 0}">
+            <c:when test="${obj.objection_status == 1}">
               <span style="color: blue;">승인</span>
             </c:when>
-            <c:when test="${obj.approve_objection == 1}">
+            <c:when test="${obj.objection_status == 2}">
               <span style="color: red;">반려</span>
             </c:when>
             <c:otherwise>

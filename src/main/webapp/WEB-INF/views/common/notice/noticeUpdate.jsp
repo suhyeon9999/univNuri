@@ -62,7 +62,7 @@
 					<textarea class="line-textarea" name="content"  required >${detailNotice.content }</textarea>
 				</div>
 				<div class="buttons">
-					<button class="btn-gray" onclick="location.href='${pageContext.request.contextPath}/noticeList'">목록</button>
+					<button type="button" class="btn-gray" onclick="location.href='${pageContext.request.contextPath}/detailNotice?notice_idx=${detailNotice.notice_idx}'">취소</button>
 					<button type="submit" class="btn-gray">등록</button>
 					<input type="hidden" name="notice_idx"	value="${detailNotice.notice_idx }">
 					<input type="hidden" name="cPage"	value="${cPage }">
@@ -77,19 +77,27 @@
 		</div>
 	</footer>
 <script>
-    function validateForm() {
-        var title = document.forms["noticeForm"]["title"].value;
-        var content = document.forms["noticeForm"]["content"].value;
-        if (title.length > 100) {
-            alert("제목은 100자를 초과할 수 없습니다.");
-            return false;
-        }
-        if (content.length > 4000) {
-            alert("내용은 4000자를 초과할 수 없습니다.");
-            return false;
-        }
-        return true;
+function validateForm() {
+    var title = document.forms["noticeForm"]["title"].value.trim();
+    var content = document.forms["noticeForm"]["content"].value.trim();
+    if (title === "") {
+        alert("제목을 입력해주세요.");
+        return false;
     }
+    if (content === "") {
+        alert("내용을 입력해주세요.");
+        return false;
+    }
+    if (title.length > 100) {
+        alert("제목은 100자를 초과할 수 없습니다.");
+        return false;
+    }
+    if (content.length > 4000) {
+        alert("내용은 4000자를 초과할 수 없습니다.");
+        return false;
+    }
+    return true;
+}
 </script>
 </body>
 </html>

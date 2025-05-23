@@ -10,18 +10,8 @@
   l.lect_idx,
   l.lect_name AS assign_title,
   u.name AS professor_name,
-CASE 
-  WHEN c.class_building IN (1,2,3) THEN 
-    CONCAT(
-      CASE c.class_building
-        WHEN 1 THEN '청'
-        WHEN 2 THEN '예'
-        WHEN 3 THEN '기'
-      END,
-      c.class_room
-    )
-  ELSE '미지정'
-END AS classroom,
+  c.class_building,
+  c.class_room,
   l.lect_day,
   l.lect_start_time,
   l.lect_end_time,
@@ -30,7 +20,7 @@ END AS classroom,
   s.score_assign,
   s.score_attend,
   s.score_total,
-  l.lect_start_date
+  l.lect_start_date 
 FROM enroll e
 JOIN lecture l ON e.lect_idx = l.lect_idx
 JOIN teacher t ON l.t_idx = t.t_idx
@@ -83,13 +73,14 @@ WHERE e.s_idx = #{s_idx}
 </select>
   <select id="getObjectionList" parameterType="String" resultType="map">
 SELECT 
+  l.lect_idx,
   o.objection_idx,
   l.lect_name,
   u.name AS professor_name,
   o.objection_content,
   o.apply_date,
   o.handle_date,
-  o.approve_objection,
+  o.objection_status,
   o.objection_active
 FROM objection o
 JOIN enroll e ON o.enroll_idx = e.enroll_idx
@@ -111,27 +102,41 @@ ORDER BY o.apply_date DESC
     objection_content,
     apply_date,
     handle_date,
-    approve_objection,
+    objection_status,
     objection_active
   ) VALUES (
     #{enroll_idx},
     #{objection_content},
     NOW(),
     NULL,
-    NULL,
+    0,  <!-- 상태: 0 = 대기 -->
     #{objection_active}
   )
 </insert>
 <!-- 이의 제기 디테일 -->
-<select id="getObjectionByIdx" parameterType="String" resultType="map">
-  SELECT o.*, l.lect_name, u.name AS professor_name
-  FROM objection o
-  JOIN enroll e ON o.enroll_idx = e.enroll_idx
-  JOIN lecture l ON e.lect_idx = l.lect_idx
-  JOIN teacher t ON l.t_idx = t.t_idx
-  JOIN user u ON t.user_idx = u.user_idx
-  WHERE o.objection_idx = #{objection_idx}
+<select id="getObjectionListByStudentAndLecture" resultType="map" parameterType="map">
+SELECT 
+  l.lect_idx,
+  o.objection_idx,
+  l.lect_name,
+  u.name AS professor_name,
+  o.objection_content,
+  o.apply_date,
+  o.handle_date,
+  o.objection_status,
+  o.objection_active 
+FROM objection o
+JOIN enroll e ON o.enroll_idx = e.enroll_idx
+JOIN lecture l ON e.lect_idx = l.lect_idx
+JOIN teacher t ON l.t_idx = t.t_idx
+JOIN user u ON t.user_idx = u.user_idx
+WHERE e.s_idx = #{s_idx} 
+  AND l.lect_idx = #{lect_idx} 
+  AND o.objection_active = 0 
+ORDER BY o.apply_date DESC
+
 </select>
+
 <!-- 이의제기 삭제 -->
 <update id="sScoreSearchObjectionDetailDeleteOK" parameterType="map">
     UPDATE objection o
@@ -142,22 +147,33 @@ ORDER BY o.apply_date DESC
       AND o.objection_active = 0
 </update>
 <!-- 전체 이의제기 조회 -->
-<select id="getAllObjectionList" parameterType="string" resultType="map">
-SELECT 
-  o.objection_idx,
-  l.lect_name,
-  u.name AS professor_name,
-  o.objection_content,
-  o.apply_date,
-  o.handle_date,
-  o.approve_objection,
-  o.objection_active
-FROM objection o
-JOIN enroll e ON o.enroll_idx = e.enroll_idx
-JOIN lecture l ON e.lect_idx = l.lect_idx
-JOIN teacher t ON l.t_idx = t.t_idx
-JOIN user u ON t.user_idx = u.user_idx
-WHERE e.s_idx = #{s_idx}
-ORDER BY o.apply_date DESC
+<select id="getAllObjections" resultType="map">
+    SELECT o.*, s.s_name, l.lect_name
+    FROM objection o
+    JOIN enroll e ON o.enroll_idx = e.enroll_idx
+    JOIN student s ON e.s_idx = s.s_idx
+    JOIN lecture l ON e.lect_idx = l.lect_idx
+    WHERE o.objection_active = 0
+</select>
+<!-- 이의제기 신청 페이지 -->
+<select id="getObjectionInfoForInsert" parameterType="map" resultType="map">
+    SELECT 
+    l.lect_idx,
+        l.lect_name,
+        u.name AS professor_name,
+        NOW() AS apply_date
+    FROM enroll e
+    JOIN lecture l ON e.lect_idx = l.lect_idx
+    JOIN teacher t ON l.t_idx = t.t_idx
+    JOIN user u ON t.user_idx = u.user_idx
+    WHERE e.s_idx = #{s_idx}
+      AND e.lect_idx = #{lect_idx}
+</select>
+<!-- enroll IDX 구하기 -->
+<select id="getEnrollIdx" parameterType="map" resultType="string">
+    SELECT enroll_idx
+    FROM enroll
+    WHERE s_idx = #{s_idx}
+      AND lect_idx = #{lect_idx}
 </select>
 </mapper>

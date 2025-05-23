@@ -257,6 +257,35 @@ public class LectDAO {
 	        }
 	    }
 
+	 // 1. 기존 sub_set_idx 목록 조회
+	    public List<Integer> getSubSetIdxListByLectIdx(String lectIdx) {
+	        return sqlSessionTemplate.selectList("lecture.getSubSetIdxListByLectIdx", lectIdx);
+	    }
+
+	    // 2. sub_set_name + dept_idx → sub_set_idx
+	    public Integer getSubSetIdxByNameAndDept(String subSetName, String deptIdx) {
+	        Map<String, Object> param = new HashMap<>();
+	        param.put("sub_set_name", subSetName);
+	        param.put("dept_idx", deptIdx);
+	        return sqlSessionTemplate.selectOne("lecture.getSubSetIdxByNameAndDept", param);
+	    }
+
+	    // 3. 과목군 insert
+	    public int insertLectureSubjectSetByLectIdx(String lectIdx, int subSetIdx) {
+	        Map<String, Object> param = new HashMap<>();
+	        param.put("lect_idx", lectIdx);
+	        param.put("sub_set_idx", subSetIdx);
+	        return sqlSessionTemplate.insert("lecture.insertLectureSubjectSetByLectIdx", param);
+	    }
+
+	    // 4. 과목군 delete
+	    public int deleteLectureSubjectSetByLectIdx(String lectIdx, int subSetIdx) {
+	        Map<String, Object> param = new HashMap<>();
+	        param.put("lect_idx", lectIdx);
+	        param.put("sub_set_idx", subSetIdx);
+	        return sqlSessionTemplate.delete("lecture.deleteLectureSubjectSetByLectIdx", param);
+	    }
+
 
 	
 
