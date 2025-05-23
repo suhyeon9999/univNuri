@@ -280,7 +280,7 @@ public class NoticeController {
 				
 				// 전체 페이지수 계산
 				paging.setTotalPage((count == 0) ? 1 :  (int) Math.ceil((double) paging.getTotalRecord() / paging.getNumPerPage()));
-				int postsPerPage = 10; // 총 게시물은 15개, 고정 중요공지 5개를 제외한 나머지 게시물 수로 페이지 계산
+				int postsPerPage = 10; 
 				int totalNotices = count - 5; // 전체 게시물중 고정용 게시물 수를 제외한 수 저장
 				
 				// cPage(현재 페이지) 계산
