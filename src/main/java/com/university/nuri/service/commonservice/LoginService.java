@@ -19,4 +19,8 @@ public class LoginService {
 	public Map<String, Object> getByOccupationIdx(String user_idx, String user_level) {
 		return loginRepository.getByOccupationIdx(user_idx, user_level);
 	}
+	// 유저별 권한 가져오기
+	public Map<String, Object> GetAccess(String admin_idx){
+		return loginRepository.GetAccess(admin_idx);
+	}
 }

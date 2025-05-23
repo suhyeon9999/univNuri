@@ -83,8 +83,10 @@
 	      <div class="buttons">
 	        <button class="btn-gray" 
 				onclick="location.href='${pageContext.request.contextPath}/faqList'">목록</button>	 
+				<c:if test="${sessionScope.aInfo.a_grade <= 1 || sessionScope.access.acc_user_update == 1}">
 	        <button class="btn-gray" 
 	        onclick="location.href='${pageContext.request.contextPath}/moveFaqUpdate?faq_idx=${detailFaq.faq_idx}'" >수정</button>
+	        </c:if>
 		        <button class="btn-gray" 
 		        onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='${pageContext.request.contextPath}/deleteFaq?faq_idx=${detailFaq.faq_idx}'" >삭제</button>	
 	      </div>

@@ -95,6 +95,9 @@ public class MainController {
 			    // 관리자 idx
 			    case "2":
 			    	Map<String, Object>  aInfo = loginService.getByOccupationIdx(userIdx, userLevel);
+			    	String admin_idx = String.valueOf(aInfo.get("admin_idx"));
+			    	Map<String, Object> access = loginService.GetAccess(admin_idx);
+			    	session.setAttribute("access", access);
 			        session.setAttribute("aInfo", aInfo);
 			        mv.setViewName("redirect:/aDashboard");
 			        break;
