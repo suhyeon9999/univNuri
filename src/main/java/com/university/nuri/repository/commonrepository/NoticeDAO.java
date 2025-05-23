@@ -160,6 +160,7 @@ public class NoticeDAO {
 			Map<String, Integer> map = new HashedMap<String, Integer>();
 			map.put("limit", limit);
 			map.put("offset", offset);
+			System.out.println(map);
 			return sqlSessionTemplate.selectList("notice.getAllFaqList", map);
 			
 		} catch (Exception e) {

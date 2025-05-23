@@ -20,7 +20,7 @@
 					<h1>학과 등록</h1>
 				</div>
 				<div class="btn-group">
-					<button class="btn-red" onclick="location.href='${pageContext.request.contextPath}/deptList'">취소</button>
+					<button type="button" class="btn-red" onclick="location.href='${pageContext.request.contextPath}/deptList'">취소</button>
 					<input type="submit" class="btn-blue" value="등록"/>
 				</div>
 				<table>
@@ -34,17 +34,13 @@
 	</div>
 	<script type="text/javascript">
 		function checkForm() {
-			  var dept_name = document.getElementById("dept_name").value;
-			 
+			  var dept_name = document.getElementById("dept_name").value;		 
 	
 			  // 이름: 비어 있지 않은지 확인
 			  if (dept_name.trim() === "") {
 			    alert("학과이름을 입력해주세요.");
 			    return false;
-			  }
-	
-		
-	
+			  }	
 			  return true; // 모든 검사를 통과하면 폼 제출
 			}
 	</script>

@@ -5,7 +5,7 @@
 <mapper namespace="notice">
 	<!-- 공지사항 등록 -->
 	<insert id="insertNotice"
-		parameterType="com.university.nuri.vo.commonvo.NoticeVO">
+		parameterType="com.university.nuri.vo.commonvo.NoticeVO"  useGeneratedKeys="true" keyProperty="notice_idx">
 		insert into notice(admin_idx, title, content, necessary)
 		values (#{admin_idx}, #{title}, #{content}, #{necessary})
 	</insert>
@@ -39,7 +39,7 @@
 		where n.notice_active = 0
 		order by n.notice_idx desc
 		<if test="start != null and end != null">
-			LIMIT #{start}, #{end}
+			LIMIT #{start}, #{limit}
 		</if>
 	</select>
 	<!-- 공지사항 자세히보기 -->
@@ -85,9 +85,9 @@
 		or content like concat('%', #{search}, '%'))
 		and n.notice_active = 0
 		order by n.notice_idx desc
-		<if test="start != null and end != null">
-			LIMIT #{start}, #{end}
-		</if>
+		
+			LIMIT #{offset}, #{limit}
+		
 	</select>
 
 	<!-- 공지사항 수정 -->
@@ -115,14 +115,12 @@
 	</select>
 	<!-- faq 전체게시물 불러오기 -->
 	<select id="getAllFaqList" resultType="map" parameterType="map">
-		select f.* , a.a_grade
-		from faq f
-		left join admin a on f.admin_idx = a.admin_idx
-		where f.faq_active = 0
-		order by f.faq_idx desc
-		<if test="start != null and end != null">
-			LIMIT #{start}, #{end}
-		</if>
+		 select f.* , a.a_grade
+    from faq f
+    left join admin a on f.admin_idx = a.admin_idx
+    where f.faq_active = 0
+    order by f.faq_idx desc
+    LIMIT #{offset}, #{limit}
 	</select>
 	<!-- 검색해당 게시물 수 -->
 	<select id="getSearchFaqCount" parameterType="string"
@@ -170,7 +168,7 @@
 	</select>
 	<!-- faq 등록 -->
 	<insert id="faqInsert"
-		parameterType="com.university.nuri.vo.commonvo.FaqVO">
+		parameterType="com.university.nuri.vo.commonvo.FaqVO"  useGeneratedKeys="true" keyProperty="faq_idx">
 		insert into faq(admin_idx, title, content)
 		values
 		(#{admin_idx}, #{title}, #{content})
