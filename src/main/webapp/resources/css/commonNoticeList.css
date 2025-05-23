@@ -173,6 +173,7 @@ td a{
 	font-weight: bold;
 	border: none;
 	cursor: default;
+	font-size: 18px;
 }
 
 .paging li.disable {
