@@ -261,10 +261,10 @@
 	    // 초기 탭 설정
 	    var currentUrl = window.location.pathname;
 	    var activeTab = 'lect';
-	    if (currentUrl.includes('subject') || currentUrl.includes('searchSubject')) {
-	        activeTab = 'subject';
-	    } else if (currentUrl.includes('subjectSet') || currentUrl.includes('subjectSetList')) {
+	   if (currentUrl.includes('subjectSet') || currentUrl.includes('subjectSetList')) {
 	        activeTab = 'subjectSet';
+	   } else if (currentUrl.includes('subject') || currentUrl.includes('searchSubject')) {
+	        activeTab = 'subject';
 	    }
 
 	    console.log('Initial activeTab:', activeTab);
