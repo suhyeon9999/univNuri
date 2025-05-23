@@ -63,11 +63,19 @@
 											</div>
 											<div class="class">
 												<p class="top">강의실</p>
-												<p class="bottom">${k.classroom}</p>
+												<p class="bottom">
+												    <c:choose>
+												      <c:when test="${k.class_building == 0}">미래관</c:when>
+												      <c:when test="${k.class_building == 1}">현재관</c:when>
+												      <c:when test="${k.class_building == 2}">과거관</c:when>
+												      <c:otherwise>미지정</c:otherwise>
+												    </c:choose>
+												    ${k.class_room}
+												  </p>
 											</div>
 											<div class="day">
 												<p class="top">강의요일</p>
-												<p class="bottom">${k.day_of_week}</p>
+												<p class="bottom day-value">${k.day_of_week}</p>
 											</div>
 											<div class="time">
 												<p class="top">강의시간</p>
@@ -152,11 +160,19 @@
 									</div>
 									<div class="class">
 										<p class="top">강의실</p>
-										<p class="bottom">${k.classroom}</p>
+										<p class="bottom">
+												    <c:choose>
+												      <c:when test="${k.class_building == 0}">미래관</c:when>
+												      <c:when test="${k.class_building == 1}">현재관</c:when>
+												      <c:when test="${k.class_building == 2}">과거관</c:when>
+												      <c:otherwise>미지정</c:otherwise>
+												    </c:choose>
+												    ${k.class_room}
+									 </p>
 									</div>
 									<div class="day">
 										<p class="top">강의요일</p>
-										<p class="bottom">${k.day_of_week}</p>
+										<p class="bottom day-value">${k.day_of_week}</p>
 									</div>
 									<div class="time">
 										<p class="top">강의시간</p>
@@ -178,5 +194,41 @@
 			</div>
 		</div>
 	</div>
+	<script>
+  const buildingMap = {
+    0: '미래관',
+    1: '현재관',
+    2: '과거관'
+  };
+
+  const dayMap = {
+    '0': '일',
+    '1': '월',
+    '2': '화',
+    '3': '수',
+    '4': '목',
+    '5': '금',
+    '6': '토'
+  };
+
+  function renderClassroom(building, room) {
+    return (buildingMap[building] || '미지정') + ' ' + room;
+  }
+
+  function renderDay(day) {
+	  const digits = [...new Set(String(day).split(''))]; // 중복 제거
+	  return digits
+	    .map(d => dayMap[d])
+	    .filter(Boolean) // 유효한 요일만
+	    .join(', ');
+	}
+  window.onload = function () {
+	  document.querySelectorAll('.day-value').forEach(el => {
+	    const original = el.textContent.trim();
+	    el.textContent = renderDay(original);
+	  });
+	};
+</script>
+	
 </body>
 </html>

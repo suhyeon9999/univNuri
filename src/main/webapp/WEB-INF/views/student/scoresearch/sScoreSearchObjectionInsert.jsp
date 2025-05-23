@@ -16,14 +16,14 @@
 </head>
 <body>
 <div id="wrap" style="position: relative;">
-    <form id="objectionForm" method="post">
+    <form id="objectionForm" method="post" action="/sScoreSearchObjectionDetailInsertOK">
         <div class="title-container">
             <div class="highlight"></div>
             <h1>이의제기 신청</h1>
             <button type="button" onclick="submitObjection(this.form)" class="btn-blue">등록</button>
             <button type="button" onclick="cancelObjection(this.form)" class="btn-red">취소</button>
+            <input type="hidden" name="lect_idx" value="${objectionInfo.lect_idx}">
         </div>
-
 
         <c:if test="${not empty objectionInfo}">
             <table>
@@ -111,9 +111,7 @@ $('#pwCheckBtn').click(function () {
             if (response === "OK") {
                 // 비밀번호 인증 성공 → 수정 로직 실행
                 const form = document.getElementById("objectionForm");
-                form.action = "/sScoreSearchObjectionDetailInsertOK";
-                form.method = "POST";
-                form.submit(); // 이제 문제 없이 전송됨
+                form.action = "/sScoreSearchObjectionDetailUpdateOK";
             } else {
                 alert("비밀번호가 틀렸습니다.");
                 $('#pwInput').val('');

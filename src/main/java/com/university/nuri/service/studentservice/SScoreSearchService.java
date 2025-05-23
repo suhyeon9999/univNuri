@@ -15,9 +15,11 @@ public interface SScoreSearchService {
     // 이의 제기 신청
     public void sScoreSearchObjectionDetailInsertOK(Map<String, Object> params);
     // 이의 제기 디테일
-    public Map<String, Object> getObjectionByIdx(String objection_idx);
+    public Map<String, Object> getObjectionByIdx(String objection_idx, String lect_idx, String s_idx);
     // 이의 제기 삭제
     public void sScoreSearchObjectionDetailDeleteOK(Map<String, String> paramMap);
     // 이의제기 신청 페이지
     Map<String, Object> getObjectionInfoForInsert(String s_idx, String lect_idx);
+    // enroll IDX 구하기
+    String getEnrollIdx(String s_idx, String lect_idx);
 }

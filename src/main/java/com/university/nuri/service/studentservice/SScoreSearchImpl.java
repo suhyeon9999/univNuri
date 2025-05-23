@@ -1,5 +1,6 @@
 package com.university.nuri.service.studentservice;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class SScoreSearchImpl implements SScoreSearchService{
 	}
 	// 이의 제기 디테일
 	@Override
-	public Map<String, Object> getObjectionByIdx(String objection_idx) {
-		return sScoreSearchDAO.getObjectionByIdx(objection_idx);
+	public Map<String, Object> getObjectionByIdx(String objection_idx,String lect_idx, String s_idx) {
+		return sScoreSearchDAO.getObjectionByIdx(objection_idx,lect_idx,s_idx);
 	}
 	// 이의 제기 삭제
 	@Override
@@ -52,4 +53,10 @@ public class SScoreSearchImpl implements SScoreSearchService{
 	public Map<String, Object> getObjectionInfoForInsert(String s_idx, String lect_idx) {
 	    return sScoreSearchDAO.getObjectionInfoForInsert(s_idx, lect_idx);
 	}
+	// enroll idx 구하기
+	    @Override
+	    public String getEnrollIdx(String s_idx, String lect_idx) {
+	        return sScoreSearchDAO.getEnrollIdx(s_idx,lect_idx);
+	}
+
 }

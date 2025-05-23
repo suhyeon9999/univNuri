@@ -57,9 +57,14 @@ public class SScoreSearchDAO {
 			e.printStackTrace();
 		}
 	}
-	public Map<String, Object> getObjectionByIdx(String objection_idx) {
+	
+	public Map<String, Object> getObjectionByIdx(String objection_idx, String lect_idx, String s_idx) {
 		try {
-			return sqlSessionTemplate.selectOne("sscoresearch.getObjectionByIdx",objection_idx);
+			Map<String, Object> map = new HashMap<>();
+			map.put("objection_idx", objection_idx);
+			map.put("lect_idx", lect_idx);
+			map.put("s_idx", s_idx);
+			return sqlSessionTemplate.selectOne("sscoresearch.getObjectionListByStudentAndLecture",map);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -85,4 +90,15 @@ public class SScoreSearchDAO {
 			return null;
 		}
 	}
+	// enroll idx 구하기
+    public String getEnrollIdx(String s_idx, String lect_idx) {
+    	try {
+    		Map<String, String> map = new HashMap<>();
+    		map.put("s_idx", s_idx);
+    		map.put("lect_idx", lect_idx);
+    		return sqlSessionTemplate.selectOne("sscoresearch.getEnrollIdx",map);
+		} catch (Exception e) {
+			return null;
+		}
+    }
 }

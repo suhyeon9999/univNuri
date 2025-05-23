@@ -72,9 +72,14 @@ import com.university.nuri.vo.commonvo.UserVO;
 	      return mv;
 	  }
 	  @RequestMapping("/sScoreSearchObjectionDetail")
-	  public ModelAndView sScoreSearchObjectionDetail(@RequestParam("objection_idx")String objection_idx) {
+	  public ModelAndView sScoreSearchObjectionDetail(@RequestParam("objection_idx")String objection_idx, HttpSession session, @RequestParam("lect_idx")String lect_idx) {
 		  ModelAndView mv = new ModelAndView(); 
-		  Map<String, Object> objection = sScoreSearchService.getObjectionByIdx(objection_idx);
+		  Map<String, Object> sInfo = (Map<String,  Object>) session.getAttribute("sInfo"); 
+		  String s_idx =  String.valueOf(sInfo.get("s_idx"));
+		  Map<String, Object> objection = sScoreSearchService.getObjectionByIdx(objection_idx, lect_idx, s_idx);
+		  System.out.println("s_idx" + s_idx);
+		  System.out.println("lect_idx" + lect_idx);
+		  System.out.println("📌 objection = " + objection);
 		  mv.addObject("objectionList", objection);
 		  mv.setViewName("student/scoresearch/sScoreSearchObjectionDetail");
 		  return mv;
@@ -96,7 +101,7 @@ import com.university.nuri.vo.commonvo.UserVO;
 	  @PostMapping("/sScoreSearchObjectionDetailUpdateOK")
 	  public ModelAndView sScoreSearchObjectionDetailUpdateOK( @RequestParam("objection_idx") String objection_idx,
 			    @RequestParam("objection_content") String objection_content,
-			    RedirectAttributes redirectAttributes) {
+			    RedirectAttributes redirectAttributes, @RequestParam("lect_idx")String lect_idx) {
 		  try {
 			  ModelAndView mv = new ModelAndView(); 
 			  Map<String, Object> params = new HashedMap<>();
@@ -109,7 +114,7 @@ import com.university.nuri.vo.commonvo.UserVO;
 			  }else{
 				  redirectAttributes.addFlashAttribute("msg", "수정 실패 했습니다.");
 			  }
-			  mv.setViewName("redirect:/sScoreSearchObjectionDetail?objection_idx="+objection_idx);
+			  mv.setViewName("redirect:/sScoreSearchObjectionDetail?objection_idx="+objection_idx+"&lect_idx="+lect_idx);
 			  return mv;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,18 +153,18 @@ import com.university.nuri.vo.commonvo.UserVO;
 		        @RequestParam("lect_idx") String lect_idx) {
 		    try {
 		        ModelAndView mv = new ModelAndView();
-		        
 		        // 세션에서 s_idx, lect_idx 가져오기
 		        Map<String, Object> sInfo = (Map<String, Object>) session.getAttribute("sInfo");
 		        String s_idx = String.valueOf(sInfo.get("s_idx"));		        
 		        // enroll_idx 조회
-		        String enroll_idx = sEnrollService.getEnrollIdx(s_idx, lect_idx);
+		        String enroll_idx = sScoreSearchService.getEnrollIdx(s_idx, lect_idx);
 		        System.out.println("s_idx: " + s_idx);
 		        System.out.println("lect_idx: " + lect_idx);
 		        System.out.println("enroll_idx: " + enroll_idx);
 
 		        // 파라미터 맵 구성
 		        Map<String, Object> params = new HashMap<>();
+		        mv.addObject("lect_idx", lect_idx);
 		        params.put("enroll_idx", enroll_idx);
 		        params.put("objection_content", objection_Content);
 		        params.put("objection_active", 0);  // 기본 미처리 상태
@@ -210,5 +215,6 @@ import com.university.nuri.vo.commonvo.UserVO;
 		        return "FAIL";
 		    }
 		}
+		
   }
  

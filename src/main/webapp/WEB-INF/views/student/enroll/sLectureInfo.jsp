@@ -54,7 +54,7 @@
 			  </tr>
 			  <tr>
 			    <th>강의 요일</th>
-			    <td>${lectInfo.lect_day}요일</td>
+			    <td class="day-value">${lectInfo.day_of_week} 요일</td>
 			  </tr>
 			  <tr>
 			    <th>강의 시간</th>
@@ -62,7 +62,15 @@
 			  </tr>
 			  <tr>
 			    <th>강의실</th>
-			    <td>${lectInfo.class_room}</td>
+			    <td class="bottom">	
+					<c:choose>
+						 <c:when test="${lectInfo.class_building == 0}">미래관</c:when>
+						 <c:when test="${lectInfo.class_building == 1}">현재관</c:when>
+						 <c:when test="${lectInfo.class_building == 2}">과거관</c:when>
+						 <c:otherwise>미지정</c:otherwise>
+						 </c:choose>
+						 ${lectInfo.class_room}
+				</td>
 			  </tr>
 			  <tr>
 			    <th>강의 기간</th>
@@ -72,5 +80,40 @@
 		</div>
     </div>
 </div>
+<script>
+  const buildingMap = {
+    0: '미래관',
+    1: '현재관',
+    2: '과거관'
+  };
+
+  const dayMap = {
+    '0': '일',
+    '1': '월',
+    '2': '화',
+    '3': '수',
+    '4': '목',
+    '5': '금',
+    '6': '토'
+  };
+
+  function renderClassroom(building, room) {
+    return (buildingMap[building] || '미지정') + ' ' + room;
+  }
+
+  function renderDay(day) {
+	  const digits = [...new Set(String(day).split(''))]; // 중복 제거
+	  return digits
+	    .map(d => dayMap[d])
+	    .filter(Boolean) // 유효한 요일만
+	    .join(', ');
+	}
+  window.onload = function () {
+	  document.querySelectorAll('.day-value').forEach(el => {
+	    const original = el.textContent.trim();
+	    el.textContent = renderDay(original);
+	  });
+	};
+</script>
 </body>
 </html>
