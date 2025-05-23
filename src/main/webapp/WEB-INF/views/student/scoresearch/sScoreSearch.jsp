@@ -67,11 +67,14 @@
           <c:forEach var="k" items="${scoreList}" varStatus="v">
             <div class="assign-list">
               <h2>${k.assign_title}</h2>
-
-              <c:if test="${not empty k.score_total}">
-                <button type="button" onclick="location.href='/sScoreSearchObjectionInsert?lect_idx=${k.lect_idx}'"
-                        style="background-color: orange; color: white; font-size: 16px; width: 88px;">이의제기</button>
-              </c:if>
+				<fmt:formatDate value="${k.lect_start_date}" pattern="MM" var="lectMonth" />
+				
+				<c:if test="${(lectMonth ge '03' and lectMonth le '06') or (lectMonth ge '09' and lectMonth le '12')}">
+				  <c:if test="${not empty k.score_total}">
+				    <button type="button" onclick="location.href='/sScoreSearchObjectionInsert?lect_idx=${k.lect_idx}'"
+				            style="background-color: orange; color: white; font-size: 16px; width: 88px;">이의제기</button>
+				  </c:if>
+				</c:if>
               <input type="hidden" name="lect_idx" value="${k.lect_idx}" />
               <div class="time">
                 <p>연도</p>
