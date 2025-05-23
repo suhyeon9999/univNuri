@@ -152,11 +152,7 @@ public class NoticeController {
 
 	
 	
-	// 공지사항 자세히 보기
-	@GetMapping("/noticeDetail")
-	public ModelAndView noticeDetail() {
-		return new ModelAndView("notice/noticeDetail");
-	}
+	
 	
 	// 공지사항 -> 공지사항 글쓰기페이지 이동
 	@GetMapping("/moveInsertNotice")
