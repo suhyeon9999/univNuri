@@ -194,7 +194,7 @@
 								<!-- 다음 블록 버튼 -->
 				                <c:choose>
 				                    <c:when test="${paging.hasNextBlock}">
-				                        <li><a href="/noticeList?cPage=${paging.endBlock + 1}">></a></li>
+				                        <li><a href="/noticeList?cPage=${paging.endBlock + 1}">>></a></li>
 				                    </c:when>
 				                    <c:otherwise>
 				                        <li class="disable">>></li>
@@ -208,8 +208,9 @@
 				<div class="buttons">
 					<button class="btn-gray" id="long-btn"
 						onclick="location.href='${pageContext.request.contextPath}/noticeList'">전체글 보기</button>
-					<button class="btn-gray"
-						onclick="location.href='${pageContext.request.contextPath}/moveInsertNotice'">글쓰기</button>
+					<c:if test="${sessionScope.aInfo.a_grade <= 1 || sessionScope.access.acc_user_insert == 1}">
+					<button class="btn-gray" onclick="location.href='${pageContext.request.contextPath}/moveInsertNotice'">글쓰기</button>
+					</c:if>
 				</div>
 		</div>
 	</div>

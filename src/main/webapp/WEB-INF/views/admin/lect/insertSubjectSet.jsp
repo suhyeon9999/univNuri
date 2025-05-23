@@ -125,7 +125,7 @@ function filterSubjectsByDept(deptIdx) {
             const cloned = row.cloneNode(true);  // 과목을 클론
             const checkbox = cloned.querySelector('input[type="checkbox"]');
 
-            const subjectName = row.querySelectorAll("td")[2]?.textContent.trim();  // 과목명 추출
+            const subjectName = row.querySelectorAll("td")[3]?.textContent.trim();  // 과목명 추출
             checkbox.setAttribute("data-subject-name", subjectName);  // subject_name 설정
 
             checkbox.onchange = function () {
@@ -152,7 +152,7 @@ function updateSelectedSubjects(checkbox) {
     let subjectName = checkbox.getAttribute("data-subject-name");
     if (!subjectName || subjectName.trim() === "") {
         const tds = checkbox.closest("tr").querySelectorAll("td");
-        subjectName = tds.length >= 3 ? tds[2].textContent.trim() : "Unnamed";
+        subjectName = tds.length >= 4 ? tds[3].textContent.trim() : "Unnamed";
     }
 
     if (checkbox.checked) {
@@ -198,7 +198,7 @@ window.onload = function() {
                 subjectName = checkbox.getAttribute("data-subject-name");
                 if (!subjectName) {
                     const tds = checkbox.closest("tr").querySelectorAll("td");
-                    subjectName = tds.length >= 3 ? tds[2].textContent.trim() : "Unnamed";
+                    subjectName = tds.length >= 4 ? tds[3].textContent.trim() : "Unnamed";
                 }
                 selectedSubjects[idx] = subjectName;
             }

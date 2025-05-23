@@ -21,4 +21,8 @@
 		<select id="getAdminByUserIdx" parameterType="String" resultType="Map">
 		    SELECT admin_idx, a_grade FROM admin WHERE user_idx = #{user_idx}
 		</select>
+		<!-- 3. 관리자 별 권한 가져오기 -->
+		<select id="access" parameterType="String" resultType="Map">
+		    SELECT * FROM access WHERE admin_idx = #{admin_idx} 
+		</select>
 </mapper>

@@ -58,7 +58,9 @@
 				<div class="buttons">
 					<button class="btn-gray"  type="button"
 					onclick="location.href='${pageContext.request.contextPath}/faqList'">목록</button>
+					<c:if test="${sessionScope.aInfo.a_grade <= '1' or sessionScope.access.acc_user_insert == '1'}">
 					<button type="submit" class="btn-gray">등록</button>
+					</c:if>
 					<input type="hidden" name="admin_idx" value="${sessionScope.aInfo.admin_idx}" />
 				</div>
 			</form>
