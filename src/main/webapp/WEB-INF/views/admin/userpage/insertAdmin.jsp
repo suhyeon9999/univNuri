@@ -20,7 +20,7 @@
 					<h1>관리자 등록</h1>
 				</div>
 				<div class="btn-group">
-					<button class="btn-red" onclick="location.href='/adminList'">취소</button>
+					<button type="button" class="btn-red" onclick="location.href='/adminList'">취소</button>
 					<input type="submit" class="btn-blue" value="등록" />
 				</div>
 				<table>

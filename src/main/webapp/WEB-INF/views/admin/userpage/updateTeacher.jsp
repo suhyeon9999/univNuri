@@ -72,14 +72,9 @@
 					</select></td>
 			<tr>
 				<th><label for="t_dept_chair">학과장 여부</label></th>
-				<td>
-					<select name="t_dept_chair" id="t_dept_chair" required>
-						<option value="0" <c:if test="${detailTeacher.t_dept_chair == '교수'}">selected</c:if>>교수</option>
-						<option value="1" <c:if test="${detailTeacher.t_dept_chair == '학과장'}">selected</c:if>>학과장</option>
-					</select>
-				</td>
+									<td><input type="text" name="t-idx"
+						value="${detailTeacher.t_dept_chair}" required disabled></td>
 			</tr>
-
 			</table>
 		</div>
 	</div>
@@ -95,11 +90,10 @@ function updateOkTeacher() {
     const phone = $('input[name="phone"]').val().trim();
     const dept_idx = $('select[name="dept_idx"]').val(); // 교수는 전공만 있음
     const user_id = '${detailTeacher.user_id}';  // 교수 사번
-    const t_dept_chair = $('select[name="t_dept_chair"]').val();  // 학과장 여부
     const status = $('select[name="status"]').val(); 
 
     // 유효성 검사
-    if (!name || !birth || !email || !phone || !dept_idx || !t_dept_chair) {
+    if (!name || !birth || !email || !phone || !dept_idx ) {
         alert("필수 항목을 모두 입력해 주세요.");
         return;
     }
@@ -111,8 +105,7 @@ function updateOkTeacher() {
         birth: birth,
         email: email,
         phone: phone,
-        dept_idx: dept_idx, 
-        t_dept_chair : t_dept_chair, 
+        dept_idx: dept_idx,  
         status : status
     };
 

@@ -18,7 +18,7 @@ public interface ATeacherService {
 
 	int getUpdateUserTable(String user_id, String name, String birth, String email, String phone, int status);
 
-	int getUpdateTeacherTable(String user_id, int dept_idx, int t_dept_chair);
+	int getUpdateTeacherTable(String user_id, int dept_idx);
 
 	String getATeacherCheckPassword(String user_id);
 

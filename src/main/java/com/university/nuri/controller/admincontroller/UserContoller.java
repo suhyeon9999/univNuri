@@ -117,6 +117,8 @@ public class UserContoller {
 			// 입력받은 정보에서 생년월일6자리 + 핸드폰 뒷 4자리 조합 -> 비밀번호 저장		
 			// 생년월일 처리
 			String birth6 = userVO.getBirth().replaceAll("-", "").substring(2, 8);
+			
+			System.out.println("교수 학과 테스트 : "+teacherVO.getDept_idx());
 
 			// 휴대폰번호 처리
 			String phoneDigits = userVO.getPhone().replaceAll("[^0-9]", "");
@@ -131,7 +133,8 @@ public class UserContoller {
 			// 유저레벨, id지정
 			userVO.setUser_level("1");
 			userVO.setStatus("4");
-			teacherVO.setDept_idx("2");
+			teacherVO.setT_dept_chair("0");
+			
 			int currentYear = LocalDate.now().getYear();
 			// 사번 생성
 			String yearstr = String.valueOf(currentYear); //현재년도
