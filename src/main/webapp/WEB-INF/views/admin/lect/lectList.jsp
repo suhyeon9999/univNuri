@@ -178,7 +178,7 @@
 										<c:forEach var="k" items="${subjectSetList}" varStatus="v">
 											<tr>
 												<td>${v.index + 1}</td>
-												<td><a href="/detailSubjectSet?sub_set_idx=${k.sub_set_idx}">${k.sub_set_name}</a></td>
+												<td><a href="/detailSubjectSet?sub_set_num=${k.sub_set_num}">${k.sub_set_name}</a></td>
 												<td>${k.dept_name}</td>
 												<td>
 													<c:choose>
@@ -192,7 +192,7 @@
 												</td>
 											</tr>
 										</c:forEach>
-									</tbody>
+									</tbody>       
 								</table>
 							</c:otherwise>
 						</c:choose>
