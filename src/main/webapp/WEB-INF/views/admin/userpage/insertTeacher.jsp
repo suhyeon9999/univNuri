@@ -53,14 +53,6 @@
 								</c:forEach>
 						</select></td>
 					</tr>
-					<tr>
-						<th><label for="t_dept_chair">학과장 여부</label></th>
-						<td><select name="t_dept_chair" id="t_dept_chair" required>
-								<option value="" selected>학과장 여부 선택</option>
-								<option value="0">교수</option>
-								<option value="1">학과장</option>
-						</select></td>
-					</tr>
 				</table>
 			</form>
 		</div>

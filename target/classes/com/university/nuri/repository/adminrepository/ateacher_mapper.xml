@@ -77,8 +77,7 @@
 	<update id="getUpdateTeacherTable" parameterType="map">
 		UPDATE teacher
 		SET
-		dept_idx = #{dept_idx}, 
-		t_dept_chair = #{t_dept_chair}
+		dept_idx = #{dept_idx}
 		WHERE user_idx = (
 		SELECT
 		user_idx FROM user
