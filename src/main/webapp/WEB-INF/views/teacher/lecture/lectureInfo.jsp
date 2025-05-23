@@ -104,7 +104,7 @@ th, td {
 	<div id="wrap">
 		<div class="title-container">
 			<div class="highlight"></div>
-			<h1>자바 기초</h1>
+			<h1>${lectureInfo.lect_name}</h1>
 		</div>
 		<div class="nav-container">
 			<div class="nav-left">

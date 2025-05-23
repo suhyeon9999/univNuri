@@ -66,6 +66,8 @@ public class LectureController {
 		paramMap.put("lect_idx", lect_idx);
 		paramMap.put("end", end);
 		List<Map<String,Object>> assignList = lectureService.getAssignList(paramMap);
+		Map<String, Object> lectureInfo = lectureService.getLectureInfo(lect_idx);
+		mv.addObject("lectureInfo", lectureInfo);
 		mv.addObject("lect_idx", lect_idx);
 		mv.addObject("assignList", assignList);
 		for (Map<String, Object> assign : assignList) {
@@ -113,7 +115,8 @@ public class LectureController {
 		resultFinal = lectureService.finalExist(lect_idx);
  		mv.addObject("resultMid", resultMid);
 		mv.addObject("retusltFinal", resultFinal);
-		
+		Map<String, Object> lectureInfo = lectureService.getLectureInfo(lect_idx);
+		mv.addObject("lectureInfo", lectureInfo);
 		
 		//시험 리스트 
 		List<TestMakeVO> getExamList = lectureService.getExamList(lect_idx);
