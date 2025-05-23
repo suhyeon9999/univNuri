@@ -18,6 +18,6 @@ public interface SScoreSearchService {
     public Map<String, Object> getObjectionByIdx(String objection_idx);
     // 이의 제기 삭제
     public void sScoreSearchObjectionDetailDeleteOK(Map<String, String> paramMap);
-    // 전체 이의제기 불러오기
-    public List<Map<String, Object>> getAllObjectionList(String s_idx);
+    // 이의제기 신청 페이지
+    Map<String, Object> getObjectionInfoForInsert(String s_idx, String lect_idx);
 }

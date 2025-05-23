@@ -47,9 +47,9 @@ public class SScoreSearchImpl implements SScoreSearchService{
 	public void sScoreSearchObjectionDetailDeleteOK(Map<String, String> paramMap) {
 		sScoreSearchDAO.sScoreSearchObjectionDetailDeleteOK(paramMap);
 	}
-	// 전체 이의 제기 검색
+	// 이의제기 신청 페이지
 	@Override
-	public List<Map<String, Object>> getAllObjectionList(String s_idx) {
-		 return sScoreSearchDAO.getAllObjectionList(s_idx);
+	public Map<String, Object> getObjectionInfoForInsert(String s_idx, String lect_idx) {
+	    return sScoreSearchDAO.getObjectionInfoForInsert(s_idx, lect_idx);
 	}
 }

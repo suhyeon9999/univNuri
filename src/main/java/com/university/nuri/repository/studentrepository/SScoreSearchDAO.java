@@ -1,9 +1,9 @@
 package com.university.nuri.repository.studentrepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -73,12 +73,15 @@ public class SScoreSearchDAO {
 			e.printStackTrace();
 		}
 	}
-	// 전체 이의 제기 검색
-	public List<Map<String, Object>> getAllObjectionList(String s_idx) {
+	// 이의제기 신청 페이지
+	public Map<String, Object> getObjectionInfoForInsert(String s_idx, String lect_idx) {
 		try {
-			return sqlSessionTemplate.selectList("sscoresearch.getAllObjectionList",s_idx);
+		    Map<String, Object> param = new HashMap<>();
+		    param.put("s_idx", s_idx);
+		    param.put("lect_idx", lect_idx);
+			return sqlSessionTemplate.selectOne("sscoresearch.getObjectionInfoForInsert",param);
+			
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
