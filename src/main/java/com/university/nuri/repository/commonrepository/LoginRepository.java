@@ -33,4 +33,13 @@ public class LoginRepository {
 			return null;
 		}
 	}
+	// 유저별 권한 가져오기
+	public Map<String, Object> GetAccess(String admin_idx){
+		try {
+			return sqlSessionTemplate.selectOne("login.access",admin_idx);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

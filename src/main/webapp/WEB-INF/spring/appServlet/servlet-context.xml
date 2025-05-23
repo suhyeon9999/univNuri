@@ -42,9 +42,11 @@
         <!-- 로그인 없이 접근 허용할 경로들 -->
         <mvc:exclude-mapping path="/" />
         <mvc:exclude-mapping path="/user_login" />
-        <mvc:exclude-mapping path="/faqDetail" />
+        <mvc:exclude-mapping path="/faqList" />
+        <mvc:exclude-mapping path="/detailFaq" />
         <mvc:exclude-mapping path="/deptOverview" />
         <mvc:exclude-mapping path="/noticeList" />
+        <mvc:exclude-mapping path="/detailNotice" />
         <mvc:exclude-mapping path="/index" />
         <mvc:exclude-mapping path="/login" />
         <mvc:exclude-mapping path="/logout" />
