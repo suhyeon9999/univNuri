@@ -194,7 +194,7 @@
 								<!-- 다음 블록 버튼 -->
 				                <c:choose>
 				                    <c:when test="${paging.hasNextBlock}">
-				                        <li><a href="/noticeList?cPage=${paging.endBlock + 1}">></a></li>
+				                        <li><a href="/noticeList?cPage=${paging.endBlock + 1}">>></a></li>
 				                    </c:when>
 				                    <c:otherwise>
 				                        <li class="disable">>></li>
