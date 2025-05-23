@@ -118,25 +118,9 @@ public class ATeacherController {
 	        String phone = params.get("phone");
 	        int dept_idx = Integer.parseInt(params.get("dept_idx"));
 	        //학과장 여부//퇴직 재직 여부 
-	        //String t_dept_chairS =params.get("t_dept_chair");
 	        String statusS = params.get("status");
-	        
-	        //System.out.println("학과장:"+t_dept_chairS);
-	        
-//	        int t_dept_chair=0;
-//	        int status=0;
-//	        if(t_dept_chairS.equals("교수")) {
-//	        	t_dept_chair=0;
-//	        }else {
-//	        	t_dept_chair=1;
-//	        }
-	        int status=0;
-	        if(statusS.equals("재직")) {
-	        	status=4;
-	        }else {
-	        	status=5;
-	        }
-	        //System.out.println("t_dept_chair:" +t_dept_chair);
+	        System.out.println("재직 여부"+statusS);
+	        int status =  Integer.parseInt(statusS);
 
 	        // user 테이블 업데이트
 	        int userResult = aTeacherService.getUpdateUserTable(user_id, name, birth, email, phone, status);
