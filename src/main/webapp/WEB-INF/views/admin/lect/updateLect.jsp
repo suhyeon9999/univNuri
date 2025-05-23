@@ -45,16 +45,17 @@
 						</tr>
 
 						<tr>
-						    <th>과목구성</th>
-							<td>
-							  <select name="sub_set_name" required>
-							    <c:forEach var="group" items="${subjectGroupList}">
-							      <option value="${group}" <c:if test="${group eq lecture.sub_set_name}">selected</c:if>>
-							        ${group}
-							      </option>
-							    </c:forEach>
-							  </select>
-							</td>
+						   <th>과목구성</th>
+									<td>
+									  <select name="sub_set_name" required>
+									    <c:forEach var="group" items="${subjectGroupList}">
+									      <option value="${group}" <c:if test="${group eq detailLect.sub_set_name}">selected</c:if>>
+									        ${group}
+									      </option>
+									    </c:forEach>
+									  </select>
+									</td>
+
 
 						</tr>
 		            <tr>
@@ -332,12 +333,18 @@ $('#pwCheckBtn').click(function () {
 })();
 
 function submitLectureUpdate() {
+    // ✅ 여러 과목군 선택을 위한 배열 수집
+    const subSetNames = [];
+    $("select[name='sub_set_name'] option:selected").each(function () {
+        subSetNames.push($(this).val());
+    });
+
     const data = {
         lect_idx: $("#lect_idx").val(),
         lect_name: $("input[name='lect_name']").val(),
         lect_id: $("input[name='lect_id']").val(),
         dept_idx: $("select[name='dept_idx']").val(),
-        sub_set_name: $("select[name='sub_set_name']").val(),
+        sub_set_names: subSetNames, // ✅ 배열로 전송
         lect_credit: $("select[name='lect_credit']").val(),
         t_idx: $("select[name='t_idx']").val(),
         lect_max: $("#lect_max").val(),
@@ -364,21 +371,26 @@ function submitLectureUpdate() {
         }
     });
 }
+
 $(document).ready(function () {
-    // 학과 전체 불러오기
+    const $dept = $("#deptSelect");
+    const $teacher = $("select[name='t_idx']");
+    const $subjectGroup = $("select[name='sub_set_name']");
+    const defaultDept = "${detailLect.dept_idx}";
+    const defaultProf = "${detailLect.t_idx}";
+    const defaultGroup = "${detailLect.sub_set_name}";
+
+    // ✅ 학과 목록 불러오기
     $.ajax({
         url: "/getDeptListForUpdate",
         method: "GET",
         success: function (list) {
-            let $dept = $("#deptSelect");
             for (const dept of list) {
                 $dept.append('<option value="' + dept.dept_idx + '">' + dept.dept_name + '</option>');
             }
 
-            // default 값 세팅
-            const defaultDept = "${detailLect.dept_idx}";
             if (defaultDept) {
-                $dept.val(defaultDept).trigger("change");
+                $dept.val(defaultDept).trigger("change"); // 초기 학과 → 교수 & 과목군도 자동 트리거됨
             }
         },
         error: function () {
@@ -386,10 +398,11 @@ $(document).ready(function () {
         }
     });
 
-    // 학과 선택 시 → 교수 불러오기
-    $("#deptSelect").on("change", function () {
+    // ✅ 학과 선택 시 → 교수 & 과목군 모두 로드
+    $dept.on("change", function () {
         const deptIdx = $(this).val();
-        const $teacher = $("select[name='t_idx']");
+
+        // 교수 초기화
         $teacher.empty();
 
         $.ajax({
@@ -399,50 +412,37 @@ $(document).ready(function () {
             success: function (profList) {
                 if (profList.length > 0) {
                     for (const prof of profList) {
-                        $teacher.append('<option value="' + prof.t_idx + '">' + prof.name + '</option>');
-                    }
-
-                    const defaultProf = "${detailLect.t_idx}";
-                    if (defaultProf) {
-                        $teacher.val(defaultProf);
+                        const selected = (prof.t_idx == defaultProf) ? " selected" : "";
+                        $teacher.append('<option value="' + prof.t_idx + '"' + selected + '>' + prof.name + '</option>');
                     }
                 } else {
-                    $teacher.append('<option disabled>해당 학과에 등록된 교수가 없습니다.</option>');
+                    $teacher.append('<option disabled>등록된 교수가 없습니다.</option>');
                 }
             },
             error: function () {
-                alert("교수 목록을 불러오는 데 실패했습니다.");
+                alert("교수 목록 로딩 실패");
+            }
+        });
+
+        // 과목군 초기화
+        $subjectGroup.empty().append('<option value="" disabled selected>과목군 선택</option>');
+
+        $.ajax({
+            url: "/subjectGroupsByDept",
+            method: "GET",
+            data: { dept_idx: deptIdx },
+            success: function (groupList) {
+                for (const group of groupList) {
+                    const selected = (group === defaultGroup) ? " selected" : "";
+                    $subjectGroup.append('<option value="' + group + '"' + selected + '>' + group + '</option>');
+                }
+            },
+            error: function () {
+                alert("과목군 목록 로딩 실패");
             }
         });
     });
 });
-
-function loadProfessorsByDept(dept_idx) {
-    const selectedTIdx = "${detailLect.t_idx}"; // JSP에서 서버 값 JS에 주입
-
-    $.ajax({
-        url: "/teachersByDept",
-        type: "GET",
-        data: { dept_idx: dept_idx },
-        success: function (list) {
-            const $teacherSelect = $("select[name='t_idx']");
-            $teacherSelect.empty();
-
-            if (list.length > 0) {
-                for (let i = 0; i < list.length; i++) {
-                    const prof = list[i];
-                    const selected = (prof.t_idx == selectedTIdx) ? " selected" : "";
-                    $teacherSelect.append('<option value="' + prof.t_idx + '"' + selected + '>' + prof.name + '</option>');
-                }
-            } else {
-                $teacherSelect.append('<option disabled selected>등록된 교수가 없습니다</option>');
-            }
-        },
-        error: function () {
-            alert("교수 정보를 불러오지 못했습니다.");
-        }
-    });
-}
 
 </script>
 

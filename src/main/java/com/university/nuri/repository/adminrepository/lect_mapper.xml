@@ -11,17 +11,19 @@
   		left join class c on l.class_idx = c.class_idx  
   		left join teacher t on l.t_idx = t.t_idx  
   		left join user u on t.user_idx = u.user_idx   		  		
-  		where l.lect_active = 0    		  		
+  		where l.lect_active = 0 OR l.lect_active = 2    		  		
   	</select>
 	<!-- 과목 과목군 리스트 -->
-	<select id="lestSubSetList" parameterType="String" resultType="map">
-		select j.subject_name, s.sub_set_name
-  		from lecture_subject_set g
-  		left join lecture l on g.lect_idx = l.lect_idx  
-  		left join subject_set s on g.sub_set_idx = s.sub_set_idx  
-  		left join subject j on s.subject_idx = j.subject_idx  	
-  		where l.lect_idx=#{lect_idx}  and l.lect_active = 0
-	</select>
+			<select id="lestSubSetList" parameterType="String" resultType="map">
+			    SELECT j.subject_name, s.sub_set_name
+			    FROM lecture_subject_set g
+			    INNER JOIN lecture l ON g.lect_idx = l.lect_idx  
+			    INNER JOIN subject_set s ON g.sub_set_idx = s.sub_set_idx  
+			    INNER JOIN subject j ON s.subject_idx = j.subject_idx  	
+			    WHERE l.lect_idx = #{lect_idx}
+			      AND (l.lect_active = 0 OR l.lect_active = 2)
+			</select>
+
 	<!-- 학과 상세보기 -->
 	<select id="detailLect" parameterType="String" resultType="map">
 		select l.* , d.dept_name, c.*, u.name 
@@ -254,7 +256,7 @@
 <select id="getSubjectGroupsByLectureIdx" parameterType="string" resultType="string">
     SELECT DISTINCT sub_set_name
     FROM subject_set
-    WHERE dept_idx = #{dept_idx}
+    WHERE dept_idx = #{dept_idx} AND sub_set_active = 0
 </select>
 <select id="getProfessorListByDept" parameterType="string" resultType="map">
     SELECT t.t_idx, u.name
@@ -282,4 +284,34 @@
         lect_end_time = ADDTIME(#{lect_start_time}, '00:50:00')
     WHERE lect_idx = #{lect_idx}
 </update>
+<!-- 기존 과목군 목록 조회 -->
+<select id="getSubSetIdxListByLectIdx" resultType="int">
+    SELECT sub_set_idx
+    FROM lecture_subject_set
+    WHERE lect_idx = #{lect_idx}
+</select>
+
+<!-- 과목군 이름 + 학과로 sub_set_idx 조회 -->
+<select id="getSubSetIdxByNameAndDept" resultType="int">
+    SELECT sub_set_idx
+    FROM subject_set
+    WHERE sub_set_name = #{sub_set_name}
+      AND dept_idx = #{dept_idx}
+      AND sub_set_active = 0
+</select>
+
+<!-- insert -->
+<insert id="insertLectureSubjectSetByLectIdx">
+    INSERT INTO lecture_subject_set (lect_idx, sub_set_idx)
+    VALUES (#{lect_idx}, #{sub_set_idx})
+</insert>
+
+<!-- delete -->
+<delete id="deleteLectureSubjectSetByLectIdx">
+    DELETE FROM lecture_subject_set
+    WHERE lect_idx = #{lect_idx}
+      AND sub_set_idx = #{sub_set_idx}
+</delete>
+
+
   </mapper>

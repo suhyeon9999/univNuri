@@ -199,12 +199,14 @@ public class LectController {
 		    boolean result = lectService.deleteLecture(lect_idx);
 		    return result ? "OK" : "FAIL";
 		}
+		
 
 		// 강의관리 -> 강의상세보기
 		@GetMapping("/updateLect")
 		public ModelAndView UpdateLect(@RequestParam("lect_idx")String lect_idx) {
 			try {
 				ModelAndView mv = new ModelAndView();
+				
 				Map<String, Object> detailLect = lectService.detailLect(lect_idx);
 				String dept_idx = detailLect.get("dept_idx").toString(); // 강의의 개설학과 기준
 			    // 과목군 + 과목 리스트 조회
@@ -258,8 +260,9 @@ public class LectController {
 		    return lectService.getAllActiveDepts(); // dept_active = 0 조건
 		}
 
-
-	
-	
-	
+		@GetMapping("/subjectGroupsByDept")
+		@ResponseBody
+		public List<String> subjectGroupsByDept(@RequestParam("dept_idx") String dept_idx) {
+		    return lectService.getSubjectGroupsByLectureIdx(dept_idx);
+		}
 }

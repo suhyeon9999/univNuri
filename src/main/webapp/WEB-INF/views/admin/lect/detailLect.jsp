@@ -42,22 +42,23 @@
 		                <th>개설학과</th>
 		                <td>${detailLect.dept_name }</td>
 		            </tr>
-						<tr>
-						    <th>과목구성</th>
-						    <td>
-						        <c:choose>
-							    <c:when test="${empty subjectGroupList}">
+							<tr>
+							  <th>과목구성</th>
+							  <td>
+							    <c:choose>
+							      <c:when test="${empty lectSubSet}">
 							        과목군 미배정
-							    </c:when>
-							    <c:otherwise>
-							        <c:forEach var="group" items="${subjectGroupList}">
-							            <strong>[${group.sub_set_name}]</strong>
-							            ${group.subject_list}<br/>
+							      </c:when>
+							      <c:otherwise>
+							        <c:forEach var="group" items="${lectSubSet}">
+							          <strong>[${group.sub_set_name}]</strong>
+							          ${group.subject_name}<br/>
 							        </c:forEach>
-							    </c:otherwise>
-							</c:choose>
-						    </td>
-						</tr>
+							      </c:otherwise>
+							    </c:choose>
+							  </td>
+							</tr>
+
 
 		            <tr>
 		                <th>이수학점</th>
