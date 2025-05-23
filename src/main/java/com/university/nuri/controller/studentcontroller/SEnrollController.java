@@ -44,6 +44,10 @@ public class SEnrollController {
 		session.removeAttribute("lect_idx");
 		ModelAndView mv = new ModelAndView();
 		Map<String, Object> sInfo = (Map<String, Object>) session.getAttribute("sInfo");
+		   if (sInfo == null || sInfo.get("s_idx") == null) {
+		        mv.setViewName("redirect:/login"); // 또는 에러 페이지
+		        return mv;
+		    }
 	    String s_idx = String.valueOf(sInfo.get("s_idx"));
 	    //금학기 수강중인 과목 및 지난 강의 조회 (같이 들어있음)
 	    Map<String, List<Map<String, Object>>> senrolldata = sEnrollService.getsEnrollInfo(s_idx);

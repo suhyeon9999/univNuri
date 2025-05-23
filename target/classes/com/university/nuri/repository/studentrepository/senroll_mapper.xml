@@ -9,19 +9,12 @@ SELECT
   l.lect_idx,
   l.lect_name,
   cu.name AS teacher_name,
-  CONCAT('청', c.class_room) AS classroom,
-  CASE l.lect_day
-    WHEN 1 THEN '월'
-    WHEN 2 THEN '화'
-    WHEN 3 THEN '수'
-    WHEN 4 THEN '목'
-    WHEN 5 THEN '금'
-    WHEN 6 THEN '토'
-    WHEN 7 THEN '일'
-    ELSE '미지정'
-  END AS day_of_week,
+  c.class_building,
+  c.class_room,
+  l.lect_day AS day_of_week,
   CONCAT(TIME_FORMAT(l.lect_start_time, '%H:%i'), ' ~ ', TIME_FORMAT(l.lect_end_time, '%H:%i')) AS lecture_time,
   (SELECT COUNT(*) FROM assign a WHERE a.lect_idx = l.lect_idx) AS assign_count 
+
 FROM student s 
 JOIN user u ON s.user_idx = u.user_idx 
 JOIN enroll e ON s.s_idx = e.s_idx 
@@ -29,6 +22,7 @@ JOIN lecture l ON e.lect_idx = l.lect_idx
 JOIN teacher t ON l.t_idx = t.t_idx 
 JOIN user cu ON t.user_idx = cu.user_idx 
 JOIN class c ON l.class_idx = c.class_idx 
+
 WHERE s.s_idx = #{s_idx} 
   AND e.enroll_status = 1 
   AND l.lect_active = 0
@@ -37,53 +31,46 @@ WHERE s.s_idx = #{s_idx}
   ]]>
 		</select>
  <select id="senrollpast" resultType="map" parameterType="map">
-  SELECT 
-    l.lect_idx,
-    l.lect_name,
-    cu.name AS teacher_name,
-    CONCAT('청', c.class_room) AS classroom,
-    CASE l.lect_day
-      WHEN 1 THEN '월'
-      WHEN 2 THEN '화'
-      WHEN 3 THEN '수'
-      WHEN 4 THEN '목'
-      WHEN 5 THEN '금'
-      WHEN 6 THEN '토'
-      WHEN 7 THEN '일'
-      ELSE '미지정'
-    END AS day_of_week,
-    CONCAT(TIME_FORMAT(l.lect_start_time, '%H:%i'), ' ~ ', TIME_FORMAT(l.lect_end_time, '%H:%i')) AS lecture_time,
-    (SELECT COUNT(*) FROM assign a WHERE a.lect_idx = l.lect_idx) AS assign_count,
-    '0%' AS attendance_rate 
-  FROM student s 
-  JOIN user u ON s.user_idx = u.user_idx 
-  JOIN enroll e ON s.s_idx = e.s_idx 
-  JOIN lecture l ON e.lect_idx = l.lect_idx 
-  JOIN teacher t ON l.t_idx = t.t_idx 
-  JOIN user cu ON t.user_idx = cu.user_idx 
-  JOIN class c ON l.class_idx = c.class_idx 
-  WHERE s.s_idx = #{s_idx} 
-    AND e.enroll_status = 1 
-    AND l.lect_active = 0 
-    AND l.lect_end_date <![CDATA[ < ]]> NOW() 
-    <if test="year != null and year != ''">
-      AND YEAR(l.lect_start_date) = #{year} 
-    </if>
-    
-    <if test="semester != null and semester != ''">
-      <choose>
-        <when test='"1".equals(semester)'>
-          AND MONTH(l.lect_start_date) BETWEEN 1 AND 6 
-        </when>
-        <when test='"2".equals(semester)'>
-          AND MONTH(l.lect_start_date) BETWEEN 7 AND 12 
-        </when>
-      </choose>
-    </if>
-    
-    <if test="lect_name != null and lect_name != ''">
-      AND l.lect_name LIKE CONCAT('%', #{lect_name}, '%') 
-    </if>
+SELECT 
+  l.lect_idx,
+  l.lect_name,
+  cu.name AS teacher_name,
+  c.class_building,
+  c.class_room,
+  l.lect_day AS day_of_week,
+  CONCAT(TIME_FORMAT(l.lect_start_time, '%H:%i'), ' ~ ', TIME_FORMAT(l.lect_end_time, '%H:%i')) AS lecture_time,
+  (SELECT COUNT(*) FROM assign a WHERE a.lect_idx = l.lect_idx) AS assign_count,
+  '0%' AS attendance_rate
+FROM student s 
+JOIN user u ON s.user_idx = u.user_idx 
+JOIN enroll e ON s.s_idx = e.s_idx 
+JOIN lecture l ON e.lect_idx = l.lect_idx 
+JOIN teacher t ON l.t_idx = t.t_idx 
+JOIN user cu ON t.user_idx = cu.user_idx 
+JOIN class c ON l.class_idx = c.class_idx 
+WHERE s.s_idx = #{s_idx}
+  AND e.enroll_status = 1 
+  AND l.lect_active = 0 
+  AND l.lect_end_date <![CDATA[ < ]]> NOW()
+  
+  <if test="year != null and year != ''">
+    AND YEAR(l.lect_start_date) = #{year}
+  </if>
+
+  <if test="semester != null and semester != ''">
+    <choose>
+      <when test='"1".equals(semester)'>
+        AND MONTH(l.lect_start_date) BETWEEN 1 AND 6
+      </when>
+      <when test='"2".equals(semester)'>
+        AND MONTH(l.lect_start_date) BETWEEN 7 AND 12
+      </when>
+    </choose>
+  </if>
+
+  <if test="lect_name != null and lect_name != ''">
+    AND l.lect_name LIKE CONCAT('%', #{lect_name}, '%')
+  </if>
 	</select>
 		
 		<select id="counttotal" resultType="String" parameterType="Map">
@@ -133,7 +120,7 @@ WHERE s.s_idx = #{s_idx}
     FROM assign a
     LEFT JOIN enroll e ON a.lect_idx = e.lect_idx AND e.s_idx = #{s_idx}
     LEFT JOIN submit s ON s.assign_idx = a.assign_idx AND s.enroll_idx = e.enroll_idx
-    WHERE a.lect_idx = #{lect_idx}
+    WHERE a.lect_idx = #{lect_idx} AND assign_active = 0
     
 <choose>
     <when test="submitPeriod == '가능'">
@@ -297,31 +284,26 @@ WHERE lect_idx = #{lect_idx};
 </select>
 <!-- 강의정보 불러오기 -->
 <select id="getLectInfo" parameterType="String" resultType="map">
-  SELECT 
+SELECT 
     l.lect_name,
     l.lect_id,
     u.name AS professor_name,
     l.lect_credit,
 
-      CASE l.lect_day
-      WHEN 1 THEN '월'
-      WHEN 2 THEN '화'
-      WHEN 3 THEN '수'
-      WHEN 4 THEN '목'
-      WHEN 5 THEN '금'
-      WHEN 6 THEN '토'
-      WHEN 7 THEN '일'
-      ELSE '미지정'
-    END AS lect_day,
+    l.lect_day AS day_of_week,
 
     CONCAT(TIME_FORMAT(l.lect_start_time, '%H:%i'), ' ~ ', TIME_FORMAT(l.lect_end_time, '%H:%i')) AS lecture_time,
-    CONCAT('청 ', c.class_room) AS class_room,
+
+    c.class_building,  
+    c.class_room,      
+
     CONCAT(DATE_FORMAT(l.lect_start_date, '%Y.%m.%d'), ' ~ ', DATE_FORMAT(l.lect_end_date, '%Y.%m.%d')) AS lect_period
-  FROM lecture l
-  JOIN teacher t ON l.t_idx = t.t_idx
-  JOIN user u ON t.user_idx = u.user_idx
-  JOIN class c ON l.class_idx = c.class_idx
-  WHERE l.lect_idx = #{lect_idx}
+
+FROM lecture l
+JOIN teacher t ON l.t_idx = t.t_idx
+JOIN user u ON t.user_idx = u.user_idx
+JOIN class c ON l.class_idx = c.class_idx
+WHERE l.lect_idx = #{lect_idx}
 </select>
 <!-- Submit idx 추출 -->
 <select id="getSubmitIdx" parameterType="map" resultType="String">
