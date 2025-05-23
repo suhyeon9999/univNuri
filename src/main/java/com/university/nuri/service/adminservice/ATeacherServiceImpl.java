@@ -82,8 +82,8 @@ public class ATeacherServiceImpl implements ATeacherService{
 	}
 
 	@Override
-	public int getUpdateTeacherTable(String user_id, int dept_idx, int t_dept_chair) {
-		return aTeacherDAO.getUpdateStudentTable(user_id, dept_idx, t_dept_chair);
+	public int getUpdateTeacherTable(String user_id, int dept_idx) {
+		return aTeacherDAO.getUpdateTeacherTable(user_id, dept_idx);
 	}
 
 	@Override

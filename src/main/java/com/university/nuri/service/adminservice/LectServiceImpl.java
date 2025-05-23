@@ -4,9 +4,11 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -283,8 +285,44 @@ public class LectServiceImpl implements LectService{
 		        		}
 		        		  param.put("class_idx", String.valueOf(classInfo.get("class_idx")));
 		            int updated = lectDAO.updateLecture(param); // update 성공시 1 반환
-		            System.out.println("업데이트된 행 수: " + updated);
+		            // 3. 과목군 동기화 시작 (이 부분 추가)
+		            String lectIdx = param.get("lect_idx").toString();
+		            String deptIdx = param.get("dept_idx").toString();
+		            List<String> subSetNames = (List<String>) param.get("sub_set_names"); // 예: ["전공핵심1", "전공기초2"]
+
+		            List<Integer> oldSubSetIdxList = lectDAO.getSubSetIdxListByLectIdx(lectIdx);
+
+		            // 새로 전달된 sub_set_idx 목록
+		            List<Integer> newSubSetIdxList = new ArrayList<>();
+		            for (String subSetName : subSetNames) {
+		                Integer subSetIdx = lectDAO.getSubSetIdxByNameAndDept(subSetName, deptIdx);
+		                if (subSetIdx != null) {
+		                    newSubSetIdxList.add(subSetIdx);
+		                }
+		            }
+
+		            // 비교
+		            Set<Integer> oldSet = new HashSet<>(oldSubSetIdxList);
+		            Set<Integer> newSet = new HashSet<>(newSubSetIdxList);
+
+		            Set<Integer> toInsert = new HashSet<>(newSet);
+		            toInsert.removeAll(oldSet);
+
+		            Set<Integer> toDelete = new HashSet<>(oldSet);
+		            toDelete.removeAll(newSet);
+
+		            for (Integer subSetIdx : toInsert) {
+		                lectDAO.insertLectureSubjectSetByLectIdx(lectIdx, subSetIdx);
+		            }
+
+		            for (Integer subSetIdx : toDelete) {
+		                lectDAO.deleteLectureSubjectSetByLectIdx(lectIdx, subSetIdx);
+		            }
+		            System.out.println("INSERT 대상: " + toInsert);
+		            System.out.println("기존 과목군: " + oldSubSetIdxList);
+		            System.out.println("새로운 과목군: " + newSubSetIdxList);
 		            return updated > 0;
+
 		        } catch (Exception e) {
 		            e.printStackTrace();
 		            return false;

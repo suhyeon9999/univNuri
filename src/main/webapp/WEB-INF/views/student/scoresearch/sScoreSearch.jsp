@@ -17,10 +17,6 @@
   <div class="title-container">
     <div class="highlight"></div>
     <h1>성적조회</h1>
-    <h3>
-      전체 학점 : <span style="color: orange; margin-right: 20px;">${gpaInfo.totalGPA}</span>
-      금학기 학점 : <span style="color: orange;">${gpaInfo.semesterGPA}</span>
-    </h3>
   </div>
 
   <form action="/sScoreSearch" method="get">
@@ -70,12 +66,15 @@
         <c:otherwise>
           <c:forEach var="k" items="${scoreList}" varStatus="v">
             <div class="assign-list">
-              <h2><a class="link-black" href="/assign-detail?lect_idx=${k.lect_idx}">${v.index + 1}. ${k.assign_title}</a></h2>
-
-              <c:if test="${not empty k.score_total}">
-                <button type="button" onclick="location.href='/sScoreSearchObjectionInsert?lect_idx=${k.lect_idx}'"
-                        style="background-color: orange; color: white; font-size: 16px; width: 88px;">이의제기</button>
-              </c:if>
+              <h2>${k.assign_title}</h2>
+				<fmt:formatDate value="${k.lect_start_date}" pattern="MM" var="lectMonth" />
+				
+				<c:if test="${(lectMonth ge '03' and lectMonth le '06') or (lectMonth ge '09' and lectMonth le '12')}">
+				  <c:if test="${not empty k.score_total}">
+				    <button type="button" onclick="location.href='/sScoreSearchObjectionInsert?lect_idx=${k.lect_idx}'"
+				            style="background-color: orange; color: white; font-size: 16px; width: 88px;">이의제기</button>
+				  </c:if>
+				</c:if>
               <input type="hidden" name="lect_idx" value="${k.lect_idx}" />
               <div class="time">
                 <p>연도</p>
@@ -101,7 +100,14 @@
 
               <div class="count">
                 <p>강의실</p>
-                <p class="submit">${k.classroom}</p>
+                <p class="submit">
+			 <c:choose>
+				<c:when test="${k.class_building == 0}">미래관</c:when>
+				<c:when test="${k.class_building == 1}">현재관</c:when>
+				 <c:when test="${k.class_building == 2}">과거관</c:when>
+				<c:otherwise>미지정</c:otherwise>
+				</c:choose>
+				 ${k.class_room}</p>
               </div>
 
               <div class="count">
@@ -131,6 +137,16 @@
     </div>
   </div>
    </form>
+   <script type="text/javascript">
+   const buildingMap = {
+		    0: '미래관',
+		    1: '현재관',
+		    2: '과거관'
+		  };
+   function renderClassroom(building, room) {
+	    return (buildingMap[building] || '미지정') + ' ' + room;
+	  }
+   </script>
 </div>
 </body>
 </html>
