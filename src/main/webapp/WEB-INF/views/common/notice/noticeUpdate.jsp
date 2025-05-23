@@ -62,7 +62,7 @@
 					<textarea class="line-textarea" name="content"  required >${detailNotice.content }</textarea>
 				</div>
 				<div class="buttons">
-					<button class="btn-gray" onclick="location.href='${pageContext.request.contextPath}/noticeList'">목록</button>
+					<button type="button" class="btn-gray" onclick="location.href='${pageContext.request.contextPath}/detailNotice?notice_idx=${detailNotice.notice_idx}'">취소</button>
 					<button type="submit" class="btn-gray">등록</button>
 					<input type="hidden" name="notice_idx"	value="${detailNotice.notice_idx }">
 					<input type="hidden" name="cPage"	value="${cPage }">
