@@ -133,14 +133,11 @@
 				<div class="main-container">
 					<div class="btn-group">
 						<button class="btn-green" id="list-btn"
-							onclick="location.href='${pageContext.request.contextPath}/subSetList'">전체	과목군 보기</button>
+							onclick="location.href='${pageContext.request.contextPath}/subjectSetList'">전체 과목군 보기</button>
 					<c:if test="${sessionScope.aInfo.a_grade <= 1}">
 						<button class="btn-blue" onclick="location.href='${pageContext.request.contextPath}/moveInsertSubjectSet'">등록</button>
 					</c:if>
 					</div>
-					<p class="count">
-						전체 과목군 : <span>${fn:length(subjectSetList)}</span>
-					</p>
 					<!-- 검색 폼 -->
 					<div class="main-top">
 						<form action="/searchSubjectSet" method="get" class="form-top" id="subject-group-search-form">
@@ -205,14 +202,12 @@
 				<div class="main-container">
 					<div class="btn-group">
 						<button class="btn-green" id="list-btn"
-							onclick="location.href='${pageContext.request.contextPath}/subjectList'">전체 과목 보기</button>
-							<c:if test="${sessionScope.aInfo.a_grade <= 1 || sessionScope.access.acc_lect_insert == 1}">
-						<button class="btn-blue" onclick="location.href='${pageContext.request.contextPath}/moveInsertSubject'">등록</button>
-							</c:if>
+							onclick="location.href='${pageContext.request.contextPath}/subjectList'">전체
+							과목 보기</button>
+						<button class="btn-blue"
+							onclick="location.href='${pageContext.request.contextPath}/moveInsertSubject'">등록</button>
 					</div>
-					<p class="count">
-						전체 : <span>${subjectList != null ? subjectList.size() : 0}</span>
-					</p>
+					
 					<!-- 검색 폼 -->
 					<div class="main-top">
 						<form action="/searchSubject" method="get" class="form-top"
@@ -220,8 +215,8 @@
 							<div class="search-area">
 								<div class="search-sub">
 									<select id="searchType" name="searchType" required>
-										<option value="subject_name" selected>과목명</option>
-										<option value="dept_name">학과명</option>
+										<option value="dept_name" selected>학과명</option>
+										<option value="subject_name">과목명</option>
 									</select> <input type="text" name="keyword" required>
 									<button type="submit" class="btn-orange">
 										<i class="fa-solid fa-magnifying-glass"></i>
@@ -332,13 +327,13 @@
 	    // 과목 검색 폼 AJAX 처리
 	    $('#subject-search-form').on('submit', function(e) {
 	        e.preventDefault();
-	        var searchType = $('#searchType').val();
-	        var keyword = $('input[name="keyword"]').val().trim();
+	        var searchType = $(this).find('select[name="searchType"]').val();
+	        var keyword = $(this).find('input[name="keyword"]').val().trim();
 
 	        console.log('Search Request - searchType:', searchType, 'keyword:', keyword);
 	        if (!searchType) {
 	            console.error('searchType is null or undefined');
-	            alert('검색 유형을 선택하세요.');
+	            alert('검색 유형을 선택하세요.');ㅁ
 	            return;
 	        }
 	        if (!keyword) {
