@@ -127,9 +127,9 @@ public class SubjectController {
 	public ModelAndView searchSubject(@RequestParam(value = "searchType", required = false) String searchType,
 			@RequestParam(value = "keyword", required = false) String keyword,
 			HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView mv = new ModelAndView("검색디버깅"+keyword+searchType);
 		try {
-            
+            System.out.println();
             List<Map<String, Object>> subjectList = subjectService.searchSubject(searchType, keyword);
             if (subjectList == null) {
                 System.out.println("Warning: subjectList is null, returning empty list");
