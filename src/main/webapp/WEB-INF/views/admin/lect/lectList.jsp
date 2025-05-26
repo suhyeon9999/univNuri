@@ -211,7 +211,7 @@
 					<!-- 검색 폼 -->
 					<div class="main-top">
 						<form action="/searchSubject" method="get" class="form-top"
-							id="subject-group-search-form">
+							id="subject-search-form">
 							<div class="search-area">
 								<div class="search-sub">
 									<select id="searchType" name="searchType" required>
